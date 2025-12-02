@@ -197,13 +197,14 @@ function applyTheme(mode) {
     if (mode === "dark") {
         document.body.classList.add("dark");
         document.body.classList.remove("light");
-        metaTheme.setAttribute("content", "#0d0d0d"); // matte black
+        if (metaTheme) metaTheme.setAttribute("content", "#0d0d0d");
     } else {
         document.body.classList.remove("dark");
         document.body.classList.add("light");
-        metaTheme.setAttribute("content", "#1a10bf"); // original color
+        if (metaTheme) metaTheme.setAttribute("content", "#1a10bf");
     }
 }
+
 
 
 /* ============================================================
