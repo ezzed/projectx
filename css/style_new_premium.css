@@ -1,0 +1,1361 @@
+@import url("https://fonts.googleapis.com/css2?family=Playpen+Sans+Arabic:wght@400;600;700&display=swap");
+
+/* =========================================
+   RESET + الأساسيات + متغيّرات الألوان
+========================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
+  --bg-main: #f59e0b;
+
+  --bg-header-1: #2412d1;
+  --bg-header-2: #0308a7;
+  --bg-header-3: #6f6fdf;
+  --bg-header-4: #f2f2f7;
+
+  --text-main: #111111;
+  --text-strong: #000000;
+  --text-on-dark: #ffffff;
+
+  --accordion-bg: #29558d;
+  --accordion-border: #143a8a;
+  --accordion-gradient-1: #0a2a5c;
+  --accordion-gradient-2: #0c3c80;
+  --accordion-border-right: #83b5ff;
+}
+
+/* تحضير النمط الليلي عبر المتغيّرات + ألوان الخلفية */
+body.dark {
+  --bg-main: #050816;
+  --text-main: #f5f5f5;
+  --text-strong: #ffffff;
+
+  background: #111 !important;
+  color: #eee;
+}
+
+/* =========================================
+   الأساسيات العامة
+========================================= */
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  direction: rtl;
+  font-family: system-ui, Tahoma, sans-serif;
+  background: var(--bg-main) !important; /* البرتقالي */
+  color: var(--text-main);
+
+  /* يزحلق كل الصفحة تحت الهيدر الثابت */
+  padding-top: 50px; /* جرّب 100–130 وعدّل حسب ما يعجبك بالشكل */
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* غلاف الصفحة (الخلفية البرتقالية) */
+.page-wrapper {
+  width: 100%;
+  min-height: 100vh;
+  background: var(--bg-main);
+}
+
+/* مساحة تعويض تحت الهيدر الثابت */
+.header-spacer {
+  height: calc(72px + env(safe-area-inset-top));
+  background: var(--bg-main);
+}
+
+/* ديسكتوب / تابلت */
+.main-shell {
+  background: var(--bg-main);
+  margin: 0;
+  padding: calc(120px + env(safe-area-inset-top)) 24px 24px;
+  min-height: 100vh;
+}
+
+/* موبايل */
+@media (max-width: 600px) {
+  .main-shell {
+    padding: calc(100px + env(safe-area-inset-top)) 12px 16px;
+  }
+}
+
+/* =========================================
+   الهيدر + النوتش
+========================================= */
+
+/* خلف النوتش */
+.notch-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: env(safe-area-inset-top);
+  background: rgb(233, 16, 16) !important;
+  z-index: 9000;
+}
+
+/* الهيدر الثابت */
+.main-header {
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+  width: 100%;
+  z-index: 10000;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap; /* مهم */
+
+  background: linear-gradient(
+    to left,
+    rgba(36, 18, 209, 0.9),
+    rgba(3, 8, 167, 0.9) 40%,
+    rgba(111, 111, 223, 0.9) 80%,
+    rgba(242, 242, 247, 0.9)
+  );
+
+  color: var(--text-on-dark);
+  padding: calc(4px + env(safe-area-inset-top)) 16px 4px;
+
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+
+  transition:
+    background 0.25s ease,
+    backdrop-filter 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+/* ملاحظة أعلى الهيدر */
+.site-disclaimer {
+  position: absolute; /* تطفو فوق الهيدر */
+  inset-inline: 0; /* من اليمين واليسار = 0 */
+  top: 50%; /* نصف ارتفاع الهيدر */
+  transform: translateY(-50%); /* تصير بالنص تماماً */
+
+  text-align: center;
+  color: red;
+  font-weight: bold;
+  font-size: clamp(0.7rem, 0.6rem + 1vw, 1.4rem);
+
+  pointer-events: none; /* حتى ما تمنع الضغط على المنيو أو الأزرار تحتها */
+}
+
+/* شكل أقوى شوي لما نسوي scroll */
+.main-header.scrolled {
+  background: linear-gradient(
+    to left,
+    rgba(36, 18, 209, 0.98),
+    rgba(3, 8, 167, 0.98) 40%,
+    rgba(111, 111, 223, 0.98) 80%,
+    rgba(242, 242, 247, 0.98)
+  );
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+}
+
+/* الشعار */
+.logo img {
+  width: 150px;
+}
+
+/* قائمة الديسكتوب */
+.nav-menu {
+  display: flex;
+}
+
+.nav-menu ul {
+  list-style: none;
+  display: flex;
+  gap: 25px;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-menu li a {
+  color: var(--text-on-dark);
+  font-size: 18px;
+  white-space: nowrap;
+}
+
+/* =========================================
+   زر الهمبرغر
+========================================= */
+
+.hamburger {
+  display: none; /* يفعَّل إلى حد 1024px تحت */
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px 8px;
+  z-index: 11001;
+}
+
+.hamburger span {
+  width: 26px;
+  height: 3px;
+  background: #ffffff;
+  border-radius: 4px;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+/* أنيميشن الهمبرغر عند الفتح */
+.hamburger.is-open span:nth-child(1) {
+  transform: translateY(4px) rotate(45deg);
+}
+
+.hamburger.is-open span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.is-open span:nth-child(3) {
+  transform: translateY(-4px) rotate(-45deg);
+}
+
+/* =========================================
+   قائمة الموبايل الجانبية
+========================================= */
+
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  right: -260px;
+  width: 260px;
+  height: 100vh;
+  background: #050f28; /* خلفية صلبة */
+  padding: calc(70px + env(safe-area-inset-top)) 30px 20px 20px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+
+  transition:
+    right 0.3s ease,
+    opacity 0.3s ease;
+  opacity: 0;
+
+  z-index: 11000; /* فوق الهيدر */
+  overflow-y: auto; /* يسمح بالسكرول داخل القائمة */
+}
+
+.mobile-menu a {
+  display: block;
+  color: #ffffff;
+  font-size: 18px;
+  padding-top: 30px; /* ينزل الروابط */
+}
+
+/* حالة الفتح */
+.mobile-menu.open {
+  right: 0;
+  opacity: 1;
+}
+
+/* =========================================
+   الصفحة الرئيسية – العنوان + الخريطة
+========================================= */
+
+.title-section {
+  text-align: center;
+  padding: 40px 20px 20px;
+  margin-top: 0;
+}
+
+.title-section h1 {
+  color: var(--text-strong);
+  font-size: 34px;
+  margin-top: 0;
+  border-bottom: 3px solid #000;
+  display: inline-block;
+  line-height: 1.5;
+}
+
+.title-section h3 {
+  color: var(--text-main);
+  margin: 0 0 20px;
+  font-size: 20px;
+}
+
+/* تأثير على العنوان القابل للنقر */
+.click-h1 {
+  display: inline-block;
+  transition:
+    transform 0.2s ease,
+    text-shadow 0.2s ease;
+}
+
+.click-h1:hover {
+  transform: scale(1.03);
+  text-shadow: 0 0 12px rgba(255, 215, 0, 0.5);
+}
+
+.map-container {
+  text-align: center;
+  margin-top: -10px;
+  margin-bottom: 30px;
+}
+
+.map-container object {
+  width: 100%;
+  max-width: 800px;
+}
+
+/* =========================================
+   الفوتر + الأيقونات
+========================================= */
+
+.footer-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0 30px;
+}
+
+.social-links-wrapper {
+  display: inline-flex;
+  justify-content: center;
+  gap: 25px;
+  padding: 12px 18px;
+  border-radius: 25px;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+/* أيقونات السوشال */
+.social-links-wrapper img {
+  width: 35px;
+  height: 35px;
+  opacity: 0.85;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease,
+    filter 0.2s ease;
+}
+
+.social-links-wrapper img:hover {
+  opacity: 1;
+  transform: translateY(-2px) scale(1.05);
+  filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.4));
+}
+
+/* =========================================
+   الأكورديون – صفحة عدم المشاركة
+========================================= */
+
+.accordion-btn {
+  width: 100%;
+  background: var(--accordion-bg);
+  border: none;
+  padding: 18px 22px;
+  font-size: 20px;
+  text-align: right;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  cursor: pointer;
+  border-top: 1px solid var(--accordion-border);
+  color: #ffffff;
+
+  transition: background 0.25s ease;
+}
+
+.accordion-btn:hover {
+  background: #006eff;
+}
+
+.accordion-btn .icon {
+  font-family: Arial, sans-serif !important;
+  font-weight: bold;
+  color: #f0f4ff;
+  transition: transform 0.25s ease;
+}
+
+.accordion-btn.active .icon {
+  transform: rotate(45deg);
+}
+
+.accordion-content {
+  max-height: 0;
+  overflow: hidden;
+
+  background: linear-gradient(
+    to left,
+    var(--accordion-gradient-1),
+    var(--accordion-gradient-2)
+  );
+  padding: 0 22px;
+
+  transition:
+    max-height 0.35s ease,
+    padding 0.25s ease;
+
+  font-size: 20px;
+  line-height: 2;
+  color: #f0f4ff;
+  text-align: justify;
+  border-right: 5px solid var(--accordion-border-right);
+}
+
+.accordion-content.open {
+  padding: 22px 22px 30px;
+
+}
+
+.accordion-content p span.font-bold {
+  font-weight: bold;
+  color: #ffffff;
+}
+
+/* =========================================
+   صفحات نصية (من نحن / إلخ)
+========================================= */
+
+.page-content {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: justify;
+  line-height: 2;
+  padding: 40px 20px;
+  color: var(--text-main);
+}
+
+.title-bar {
+  background: #063c80;
+  color: #ffffff;
+  padding: 14px 0;
+  text-align: center;
+}
+
+.title-bar h2 {
+  margin: 0;
+}
+
+/* تلوين نص قسم housing */
+#housing,
+#housing h1,
+#housing h2,
+#housing h3,
+#housing p,
+#housing span {
+  color: #ffffff;
+}
+
+/* =========================================
+   الوضع الليلي (تفاصيل إضافية)
+========================================= */
+
+body.dark .page-wrapper {
+  background: #111 !important;
+}
+
+body.dark .main-header {
+  background: #000a;
+}
+
+body.dark .notch-bg {
+  background: #000 !important;
+}
+
+/* =========================================
+   زر تغيير الثيم
+========================================= */
+
+.theme-toggle {
+  cursor: pointer;
+  border: none;
+  background: #ffffff22;
+  color: #fff;
+  font-size: 22px;
+  padding: 10px 14px;
+  border-radius: 50%;
+
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(18px);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.theme-toggle:hover {
+  background: #ffffff33;
+  transform: translateY(-1px);
+}
+
+/* زر الديسكتوب/تابلت — نحجبه بالكامل الآن */
+.desktop-theme-toggle {
+  display: none !important;
+}
+
+/* زر الموبايل/تابلت — داخل قائمة الهامبرغر */
+.mobile-theme-toggle {
+  width: 100%;
+  padding: 12px 16px;
+  margin-top: 12px;
+  background: #ffffff22;
+  color: #fff;
+  border-radius: 8px;
+  font-size: 18px;
+  display: none; /* يُظهر في ميديا كويري تحت */
+}
+
+/* =========================================
+   ريسبونسيف – موبايل + تابلت (لحد 1024px)
+========================================= */
+
+@media (max-width: 1024px) {
+  .main-header {
+    padding: calc(8px + env(safe-area-inset-top)) 12px 8px;
+  }
+
+  .logo img {
+    width: 80px;
+  }
+
+  /* إخفاء قائمة الديسكتوب وإظهار الهمبرغر */
+  .nav-menu {
+    display: none;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  .title-section {
+    margin-top: 0;
+    padding: 32px 10px 18px;
+  }
+
+  .title-section h1 {
+    font-size: 22px;
+    line-height: 1.4;
+    margin-top: 0;
+  }
+
+  .title-section h3 {
+    font-size: 16px;
+    margin-bottom: 16px;
+  }
+
+  .map-container {
+    margin-top: -20px;
+  }
+
+  .header-spacer {
+    height: calc(80px + env(safe-area-inset-top));
+    background: var(--bg-main);
+  }
+
+  /* على الموبايل/تابلت: لا نعرض أي theme-toggle خارجي،
+     فقط الزر داخل القائمة الجانبية */
+  .theme-toggle {
+    display: none;
+  }
+
+  .mobile-theme-toggle {
+    display: block !important;
+  }
+}
+
+/* =========================================
+   ريسبونسيف – تابلت فقط (تعديلات بسيطة)
+========================================= */
+
+@media (min-width: 601px) and (max-width: 1024px) {
+  .logo img {
+    width: 130px;
+  }
+
+  .title-section h1 {
+    font-size: 28px;
+    margin-top: 0;
+  }
+
+  .map-container object {
+    width: 90%;
+  }
+
+  .header-spacer {
+    height: calc(90px + env(safe-area-inset-top));
+  }
+}
+
+/* =========================================
+   عنوان صفحات المحافظات + خلفية أسفل الصفحة
+========================================= */
+
+/* الخلفية البرتقالية في أسفل الصفحة */
+body::after {
+  content: "";
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 500px; /* عمق المنطقة الملونة */
+  background: var(--bg-main);
+  z-index: -1;
+}
+
+/* العنوان الرئيسي لصفحات المحافظات */
+.page-title.governorate-title {
+  margin-top: 0 !important;
+}
+
+/* العنوان الرئيسي فقط */
+.governorate-main-title {
+  margin-top: 40px !important;
+  margin-bottom: 20px !important;
+}
+
+/* العنوان الرئيسي عندما يكون عليه الكلاسين معًا */
+.page-title.governorate-title.governorate-main-title {
+  margin-top: 40px !important;
+  margin-bottom: 20px !important;
+}
+
+/* =========================================
+   القائمة الفرعية في الموبايل
+========================================= */
+
+.submenu-toggle {
+  color: #fff;
+  font-size: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding: 10px 0;
+}
+
+.submenu-toggle .arrow {
+  transition: transform 0.3s ease;
+}
+
+/* القائمة الفرعية */
+.submenu {
+  display: none;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 10px;
+  padding-left: 10px;
+}
+
+.submenu.open {
+  display: flex;
+}
+
+/* دوران السهم */
+.submenu-toggle.open .arrow {
+  transform: rotate(90deg);
+}
+
+.mobile-menu a.thiqar-link {
+  position: relative;
+}
+
+.mobile-menu a.thiqar-link::after {
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  right: 0;
+  width: 70%;
+  height: 1px;
+  background: #ffffff33;
+}
+
+/* =========================================
+   العنوان الرئيسي في الصفحة
+========================================= */
+
+.title-wrapper {
+  text-align: center;
+}
+
+.title-link {
+  text-decoration: none;
+  color: inherit;
+  display: inline-block;
+  transition:
+    transform 0.25s ease,
+    text-shadow 0.25s ease;
+}
+
+.title-link:hover {
+  transform: scale(1.03);
+  text-shadow: 0 0 12px rgba(255, 215, 0, 0.5);
+}
+
+/* العنوان الكبير */
+.title-main {
+  font-size: 46px;
+  font-weight: 800;
+  margin: 0 0 8px;
+  border-bottom: 3px solid #000;
+  padding-bottom: 5px;
+  display: inline-block;
+}
+
+/* السطر الثاني */
+.title-sub {
+  font-size: 22px;
+  font-weight: 600;
+  margin: 12px 0 0;
+  color: var(--text-strong);
+}
+
+/* =========================================
+   تعديلات على الصور في الوضع الليلي
+========================================= */
+
+body.dark img[src$=".svg"] {
+  filter: brightness(0) invert(1);
+}
+
+body.dark img.logo {
+  filter: brightness(0) invert(1);
+}
+
+/* =========================================
+   كريدت المطوّر
+========================================= */
+
+.developer-credit {
+  text-align: center;
+  margin-top: 15px;
+  font-size: 14px;
+  color: #000; /* أسود */
+}
+
+/* =========================================
+   المرشحون – شبكة الكروت
+========================================= */
+
+/* شبكة المرشحين */
+.candidates-grid {
+  display: grid;
+  gap: 32px 24px; /* مسافة بين الكروت */
+  justify-items: center; /* وسط الكرت داخل العمود */
+  margin: 40px auto;
+}
+
+/* ديسكتوب: 3 مرشحين في كل صف */
+@media (min-width: 992px) {
+  .candidates-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* تابلت وموبايل: 2 مرشح في كل صف */
+@media (min-width: 600px) and (max-width: 991px) {
+  .candidates-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* شاشات صغيرة جدًا: مرشح واحد في الصف */
+@media (max-width: 599px) {
+  .candidates-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.candidate-card {
+  text-align: center;
+  width: 220px;
+  margin: 20px 0;
+  position: relative;
+}
+
+/* رقم المرشح — فوق الصورة وبشكل Front */
+.candidate-number {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  background: #2412d1;
+  color: #fff;
+  width: 70px;
+  height: 70px;
+  font-size: 28px;
+  font-weight: 900;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+  z-index: 20;
+
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+}
+
+/* الدائرة */
+.candidate-photo-wrapper {
+  width: 180px;
+  height: 180px;
+  position: relative;
+  margin: 40px auto 0;
+}
+
+.candidate-photo {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 4px solid #fff;
+  object-fit: cover;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+}
+
+/* حاوية الأيقونات */
+.social-icons {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+/* الأيقونات الدائرية حول صورة المرشح فقط */
+.social-icons .icon {
+  width: 45px;
+  height: 45px;
+  background: #2412d1;
+  border-radius: 50%;
+  position: absolute;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  pointer-events: auto; /* فقط الأيقونات نفسها قابلة للضغط */
+  opacity: 0;
+  transform: scale(0);
+  transition: 0.3s ease;
+}
+
+.icon img {
+  width: 24px;
+  height: 24px;
+  filter: invert(1);
+}
+
+/* ===== توزيع الأيقونات ===== */
+
+/* 3 يمين */
+.right1 {
+  right: -20px;
+  top: 40px;
+}
+
+.right2 {
+  right: -25px;
+  top: 90px;
+}
+
+.right3 {
+  right: -20px;
+  top: 140px;
+}
+
+/* 2 يسار */
+.left1 {
+  left: -20px;
+  top: 65px;
+}
+
+.left2 {
+  left: -20px;
+  top: 120px;
+}
+
+/* إظهار عند hover */
+.candidate-photo-wrapper:hover .icon {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* اسم المرشح */
+.candidate-name {
+  margin-top: 20px;
+  font-size: 20px;
+  color: #fff;
+  font-weight: bold;
+}
+
+/* إظهار الأيقونات عندما يكون هناك click */
+.candidate-photo-wrapper.icons-active .icon {
+  opacity: 1 !important;
+  transform: scale(1) !important;
+}
+
+/* عند وجود click يتوقف hover */
+.candidate-photo-wrapper.icons-active:hover .icon {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* =========================================
+   بوكس المقاعد والمقاطعين
+========================================= */
+
+.gov-program-box {
+  max-width: 900px;
+  margin: 30px auto 50px;
+  padding: 16px 20px 24px;
+  border: 2px solid var(--bg-header-1, #2412d1); /* نفس لون الهيدر */
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.gov-program-title {
+  text-align: center;
+  margin-bottom: 14px;
+  font-size: 1.2rem;
+  color: #000;
+}
+
+.gov-program-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* الدوائر (مقاعد المجلس) */
+.gov-seats-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+/* الدائرة الأساسية */
+/* القاعدة العامة لكل الدوائر */
+.seat-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  /* ✨ الكل أبيض كخلفية افتراضية */
+  background: #ffffff;
+  color: #000;
+  border: 2px solid #1b3aa6; /* خط أزرق خفيف حول كل دائرة */
+}
+
+/* الدائرة رقم 165 (الاغلبية) – أزرق */
+.seat-circle--majority-marker {
+  background: #1b3aa6; /* أزرق */
+  color: #ffffff;
+}
+
+/* الدائرة رقم 110 (ثلث معطِّل مثلاً) – وردي */
+.seat-circle--third-marker {
+  background: #ff4fa3; /* وردي */
+  color: #ffffff;
+}
+
+/* الدوائر التي تمثّل مقاعد التجمّعات الوطنية (نفس ما عندك تقريباً) */
+.seat-circle--green {
+  background: #00c853; /* أخضر */
+  color: #ffffff;
+}
+
+
+.gov-program-text,
+.gov-program-note {
+  text-align: center;
+  margin-bottom: 4px;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.gov-program-note {
+  color: #b91c1c; /* ملاحظة باللون الأحمر شوي */
+}
+
+.gov-slider-label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.95rem;
+  margin-bottom: 4px;
+}
+
+.gov-slider {
+  width: 100%;
+}
+
+.gov-slider-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+/* علامة الهدف على السلايدر (لو حبيت تضيفها لاحقًا) */
+
+/* ملاحظة تحت السلايدر */
+.gov-slider-note {
+  margin-top: 6px;
+  font-size: 0.9rem;
+  color: #444;
+  line-height: 1.7;
+}
+
+body.dark .gov-slider-note {
+  color: #ddd;
+}
+
+/* حاوية التفاصيل المتقدمة */
+.gov-advanced-container {
+  margin-top: 16px;
+}
+
+/* زر إظهار التفاصيل */
+.gov-advanced-toggle {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  background: #e5e7eb;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.gov-advanced-toggle:hover {
+  background: #d1d5db;
+}
+
+/* جدول التفاصيل */
+.gov-advanced-table-container {
+  margin-top: 10px;
+  overflow-x: auto;
+}
+
+.gov-advanced-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.gov-advanced-table th,
+.gov-advanced-table td {
+  border: 1px solid #e5e7eb;
+  padding: 4px 6px;
+  text-align: center;
+}
+
+.gov-advanced-table th {
+  background: #f3f4f6;
+  font-weight: 600;
+}
+
+/* الخلايا التي أعطت مقعد لتجمعكم */
+.quota-cell--our-seat {
+  background: rgba(34, 197, 94, 0.616); /* أخضر شفاف */
+  border-color: rgba(34, 197, 94, 0.877);
+}
+
+/* الخلايا التي أعطت مقعدًا للأحزاب الأخرى */
+.quota-cell--other-seat {
+  background: rgba(107, 114, 128, 0.562); /* رمادي فاتح */
+  border-color: rgba(107, 114, 128, 0.842);
+}
+
+/* =========================================
+   المحاور + الفيديو داخل الأكورديون
+========================================= */
+
+/* الكارت: نص + فيديو */
+.issue-block {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+
+  margin: 1rem 0 1.75rem;  /* 👈 فوق وتحت */
+  /*       top   right/left  bottom  */
+}
+
+
+.issue-text {
+  flex: 1 1 260px;
+  font-size: 0.95rem;
+  line-height: 1.9;
+}
+
+/* بوكس الفيديو */
+.issue-video {
+  max-width: 340px;
+}
+
+/* إطار الفيديو */
+.issue-video-frame {
+  position: relative;
+  width: 100%;
+  background: #000;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+}
+
+.issue-video-frame iframe,
+.issue-video-frame video {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* النص "اسمع الحل من مرشحنا" */
+.issue-video-tagline {
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+/* ========= فيديو أفقي (ديسكتوب) ========= */
+
+.issue-video.video-horizontal {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.issue-video.video-horizontal .issue-video-frame {
+  aspect-ratio: 16 / 9;
+}
+
+/* النص + سهم لليمين فوق الفيديو */
+.issue-video-tagline-horizontal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-align: center;
+}
+
+/* ========= فيديو طولي (ديسكتوب) ========= */
+
+.issue-video.video-vertical {
+  display: flex;
+  gap: 0.8rem;
+  direction: rtl; /* أول عنصر (النص) يروح يمين */
+  align-items: stretch; /* نفس ارتفاع الفيديو */
+}
+
+.issue-video.video-vertical .issue-video-frame {
+  flex: 0 0 55%;
+  aspect-ratio: 9 / 16;
+}
+
+/* النص + السهم على يمين الفيديو وفي نص ارتفاعه */
+.issue-video-tagline-vertical {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* مركز عموديًا */
+  align-items: flex-end; /* على اليمين */
+  text-align: right;
+  gap: 4px;
+}
+
+/* خط "اسمع الحل من مرشحنا" */
+.handwrite-text {
+  font-family: "Playpen Sans Arabic", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #e11d48;
+  display: inline-block;
+  transform: rotate(-4deg);
+  letter-spacing: 0.5px;
+}
+
+/* الأيقونات (الأسهم) */
+.handwrite-arrow {
+  width: 26px;
+  height: auto;
+  display: inline-block;
+}
+
+.handwrite-arrow-right {
+  transform: translateY(1px);
+}
+
+.handwrite-arrow-up {
+  transform: rotate(0deg);
+}
+
+/* موبايل + آيباد بالطول */
+@media (max-width: 700px) {
+    /* خلي النص فوق والفيديو تحت في كل المحاور */
+    .issue-block {
+        flex-direction: column;
+        align-items: flex-start;
+        margin-top: 0.1rem;
+    }
+
+    .issue-video {
+        max-width: 100%;
+        width: 100%;
+    }
+
+   .issue-video-frame {
+  position: relative;
+  width: 100%;
+  background: #000;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+
+  /* السطر الجديد */
+  margin-bottom: 16px; /* تقدر تخليها 20 أو 24 إذا تحب فراغ أكبر */
+}
+
+    .issue-video.video-horizontal,
+    .issue-video.video-vertical {
+        flex-direction: column;
+        align-items: center;
+        direction: rtl;
+    }
+
+    .issue-video-tagline-horizontal,
+    .issue-video-tagline-vertical {
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        margin-top: -1.5rem;
+        margin-bottom: 0.4rem;
+    }
+}
+
+/* موبايل فقط (مثل الآيفون) */
+
+@media (max-width: 600px) {
+  /* سهم يمين يصير لتحت (أو لليسار حسب الزاوية) */
+  .handwrite-arrow-right {
+    transform: rotate(90deg);  /* جرّب -90deg لو تفضّل الاتجاه الثاني */
+  }
+
+  /* السهم الثاني */
+  .handwrite-arrow-up {
+    transform: rotate(170deg); /* عدّلها للي تريده */
+  }
+}
+
+/* تابلت مثل الآيباد (بين 601 و 1024px) */
+@media (min-width: 601px) and (max-width: 1024px) {
+  .handwrite-arrow-right {
+    transform: rotate(90deg);    /* أو زاوية أخرى للآيباد */
+  }
+
+  .handwrite-arrow-up {
+    transform: rotate(-95deg) scaleX(-1);  /* غيّرها لو تريد شكل مختلف */
+  }
+}
+
+/* ========== جعل الجداول ما تطلع خارج الصفحة ========== */
+
+/* الحاوية العامة اللي بداخلها الجداول الوطنية + جداول المحافظات */
+.parl-results-table-container {
+  width: 100%;
+  overflow-x: auto;          /* سكرول أفقي إذا الجدول أعرض من الشاشة */
+  -webkit-overflow-scrolling: touch; /* سكرول ناعم في الآيفون/الآيباد */
+}
+
+/* بلوك سانت لوغو لكل محافظة (نخليه هو أيضاً حاوية scroll) */
+.parl-saintlague-block {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-top: 1.5rem;
+}
+
+/* الجداول نفسها */
+.parl-results-table-container table,
+.parl-saintlague-block table,
+.gov-advanced-table {
+  width: 100%;
+  border-collapse: collapse;
+  /* لو تحب تجبر الجدول يكون أعرض من الجوال فتظهر سكرول */
+  min-width: 700px; /* زِدها أو قلّلها حسب ما يعجبك (مثلاً 900px) */
+}
+
+/* خلايا أصغر شوية عشان ما تتزاحم */
+.gov-advanced-table th,
+.gov-advanced-table td {
+  padding: 6px 8px;
+}
+
+/* ========== تحسينات للموبايل / التابلت ========== */
+@media (max-width: 768px) {
+  .gov-advanced-table th,
+  .gov-advanced-table td {
+    padding: 4px 6px;
+    font-size: 12px;
+  }
+
+  /* نخلي العناوين أقصر شوي شكلياً */
+  .parl-saintlague-block h3 {
+    font-size: 15px;
+  }
+
+  .parl-inline-slider {
+    margin-inline: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .gov-advanced-table th,
+  .gov-advanced-table td {
+    font-size: 11px;
+  }
+}
+
+.gov-program-note {
+  font-style: italic; /* الجملة كلها مائلة */
+}
+
+/* بس الكلمات القابلة للضغط */
+.gov-program-note a {
+  color: #0066cc;           /* أزرق */
+  text-decoration: underline; /* خط تحت الكلمات القابلة للضغط */
+}
+
+
