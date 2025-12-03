@@ -976,10 +976,44 @@ body.dark img.logo {
   margin: 4px;
   font-size: 12px;
   font-weight: 600;
-  /* ✨ الكل أبيض كخلفية افتراضية */
   background: #ffffff;
   color: #000;
-  border: 2px solid #1b3aa6; /* خط أزرق خفيف حول كل دائرة */
+  border: 2px solid #1b3aa6;
+}
+
+/* موبايل: نحول دوائر البرلمان إلى نص دائرة صغيرة جداً */
+@media (max-width: 768px) {
+  /* نص دائرة صغيرة داخل بوكس الجوكر */
+  .parl-program-box--joker .gov-seats-row {
+    max-width: 230px;                /* عرض الهلال */
+    margin: 10px auto 6px;
+    padding: 4px 4px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+    justify-content: center;
+    align-content: flex-end;         /* الكرات تتجمع تحت */
+    aspect-ratio: 2 / 1;             /*  عرض:ارتفاع = نص دائرة */
+    border-radius: 999px 999px 0 0;  /* نخليها نص دائرة */
+    overflow: hidden;                /* نخفي النصف السفلي */
+    background: transparent;
+  }
+
+  /* نخلي الكرات صغيييرة وبيضاء بلا أرقام */
+  .parl-program-box--joker .seat-circle {
+    width: 6px;
+    height: 6px;
+    margin: 1px;
+    border-radius: 50%;
+    border: 0;
+    font-size: 0;        /* نخفي الأرقام 1..329 */
+    background: #ffffff; /* كرات بيضاء صغيرة */
+  }
+
+  /* الكرات الخضراء = المقاعد اللي راحت للتجمعات الوطنية */
+  .parl-program-box--joker .seat-circle.seat-circle--green {
+    background: #16a34a; /* أخضر أوضح شوي */
+  }
 }
 
 /* الدائرة رقم 165 (الاغلبية) – أزرق */
@@ -999,6 +1033,47 @@ body.dark img.logo {
   background: #00c853; /* أخضر */
   color: #ffffff;
 }
+
+
+/* ملخّص المقاعد في الموبايل فقط */
+.parl-mobile-seats-summary {
+  display: none;          /* افتراضياً مخفي */
+}
+
+/* نصين (يمين ويسار) */
+.parl-mobile-seats-half {
+  flex: 1;
+  text-align: center;
+}
+
+.parl-mobile-number {
+  font-size: 2.4rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.parl-mobile-label {
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+/* موبايل: نخفي الدوائر ونظهر الملخّص */
+@media (max-width: 700px) {
+  /* نخلي الهلال مثل ما هو، ما نغيّر display */
+  .parl-program-box--joker .gov-seats-row {
+    /* خاليها، بدون display */
+  }
+
+  .parl-mobile-seats-summary {
+    display: flex;
+    gap: 14px;
+    margin: 12px auto 8px;
+    max-width: 420px;
+    justify-content: center;
+  }
+}
+
+
 
 
 .gov-program-text,

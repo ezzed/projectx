@@ -399,6 +399,11 @@ function initParliamentProgramJoker() {
   const seatsRow = box.querySelector(".gov-seats-row");
    const noteEl = box.querySelector(".parl-dynamic-note");
 
+  // عناصر عرض الموبايل
+  const mobileNewEl = box.querySelector(".parl-mobile-new-count");
+  const mobileTradEl = box.querySelector(".parl-mobile-trad-count");
+
+
   const detailsBtn = box.querySelector(".parl-advanced-toggle");
   const resultsContainer = box.querySelector(".parl-results-table-container");
 
@@ -611,6 +616,15 @@ function initParliamentProgramJoker() {
           "عند بقاء المقاطعين في البيت، تبقى خريطة المقاعد تقريباً كما هي، لصالح الأحزاب التقليدية.";
       }
     }
+
+        // تحديث أرقام الموبايل (نواب جدد / تقليديين)
+    if (mobileNewEl) {
+      mobileNewEl.textContent = totalNationalAllLists.toLocaleString("en-US");
+    }
+    if (mobileTradEl) {
+      mobileTradEl.textContent = totalTraditionalSeats.toLocaleString("en-US");
+    }
+
 
 
 
