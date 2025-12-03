@@ -1065,10 +1065,16 @@ body.dark img.logo {
 }
 
 /* ملخّص المقاعد في الموبايل فقط (الصندوق يمين/يسار الأرقام الكبيرة) */
+/* ملخّص المقاعد (يظهر على كل الأجهزة) */
 .parl-mobile-seats-summary {
-  display: none; /* افتراضياً مخفي */
+  display: flex;
+  gap: 14px;
+  margin: 12px auto 8px;
+  max-width: 420px;
+  justify-content: center;
 }
 
+/* نصين (يمين ويسار) */
 .parl-mobile-seats-half {
   flex: 1;
   text-align: center;
@@ -1085,15 +1091,13 @@ body.dark img.logo {
   line-height: 1.6;
 }
 
+/* على الشاشات الصغيرة نصغّر الخط شوي فقط */
 @media (max-width: 700px) {
-  .parl-mobile-seats-summary {
-    display: flex;
-    gap: 14px;
-    margin: 12px auto 8px;
-    max-width: 420px;
-    justify-content: center;
+  .parl-mobile-number {
+    font-size: 2.1rem;
   }
 }
+
 
 /* نصوص الجوكر */
 .gov-program-text {
