@@ -5,8 +5,68 @@ import { parliamentGovernoratesData } from "./parliamentData.js";
 
 const TOTAL_PARLIAMENT_SEATS = 329;
 const PARLIAMENT_MAJORITY = 165;
- const PARLIAMENT_THIRD = 110;
+const PARLIAMENT_THIRD = 110;
 
+/* ======================= رسم هلال مقاعد البرلمان ======================= */
+/**
+ * يرتّب دوائر المقاعد على شكل نصف دائرة (هلال) يعتمد على عرض الحاوية.
+ * يُستخدم هذا التخطيط في كل الشاشات، ويتكيّف تلقائيًا مع تغيير الحجم.
+ */
+// يرسم مقاعد البرلمان على شكل عدة صفوف (هلال من كرات صغيرة)
+function layoutParliamentArc(seatsRow, circles) {
+  if (!seatsRow || !Array.isArray(circles) || circles.length === 0) return;
+
+  const width = seatsRow.clientWidth || 320;
+
+  // نصف قطر الصف الخارجي (الأكبر)
+  const outerRadius = width / 2 - 4;
+
+  // نستخدم 7 صفوف مع توزيع مقاعد ثابت:
+  // المجموع = 41 + 43 + 45 + 47 + 49 + 51 + 53 = 329
+  const rows = 7;
+  const seatsPerRow = [41, 43, 45, 47, 49, 51, 53];
+
+  // المسافة بين كل صف وصف (كلما كبرت صارت الدائرة أسمك)
+  const rowGap = outerRadius / (rows + 1);
+
+  const centerX = width / 2;
+  const centerY = outerRadius + 12; // نرفع الهلال شوي عن الحافة السفلية
+
+  const height = centerY + 4;
+  seatsRow.style.position = "relative";
+  seatsRow.style.height = `${height}px`;
+
+  let globalIndex = 0;
+
+  // نرسم من الصف الداخلي إلى الخارجي حتى الشكل يطلع مرتب
+  for (let r = 0; r < rows; r += 1) {
+    const seatsInRow = seatsPerRow[r];
+    const radius = outerRadius - (rows - 1 - r) * rowGap;
+
+    // قوس من 180° (يسار) إلى 0° (يمين)
+    const startAngle = Math.PI;
+    const endAngle = 0;
+    const step =
+      seatsInRow > 1 ? (endAngle - startAngle) / (seatsInRow - 1) : 0;
+
+    for (let i = 0; i < seatsInRow; i += 1) {
+      const circle = circles[globalIndex];
+      if (!circle) return; // حماية لو صار خطأ بالعد
+
+      const angle = startAngle + step * i;
+
+      const x = centerX + radius * Math.cos(angle);
+      const y = centerY - radius * Math.sin(angle);
+
+      circle.style.position = "absolute";
+      circle.style.left = `${x}px`;
+      circle.style.top = `${y}px`;
+      circle.style.transform = "translate(-50%, -50%)";
+
+      globalIndex += 1;
+    }
+  }
+}
 
 
 /* ======================= سانت لوغو المعدّل ======================= */
@@ -86,7 +146,7 @@ function allocateSeatsSaintLague(parties, totalSeats) {
 /**
  * رسم بلوك المحافظة:
  *  - عنوان صغير
- *  - سلايدر "مراية" (disabled) يعكس السلايدر الرئيسي
+ *  - سلايدر "مراية" يعكس السلايدر الرئيسي
  *  - جدول سانت لوغو للأحزاب / التجمعات
  */
 function renderSaintLagueDetailTable(
@@ -130,7 +190,7 @@ function renderSaintLagueDetailTable(
   wrapper.appendChild(title);
 
   /* 🔹 استدعاء السلايدر من الـ <template> 🔹 */
-   const tmpl = document.getElementById("parl-inline-slider-template");
+  const tmpl = document.getElementById("parl-inline-slider-template");
   if (tmpl) {
     const clone = tmpl.content.cloneNode(true);
 
@@ -172,7 +232,6 @@ function renderSaintLagueDetailTable(
 
     wrapper.appendChild(clone);
   }
-
 
   // جدول سانت لوغو
   const table = document.createElement("table");
@@ -397,33 +456,30 @@ function initParliamentProgramJoker() {
   const sliderValueEl = box.querySelector(".gov-control-block .slider-value");
   const nationalListsSelect = box.querySelector(".national-lists-count");
   const seatsRow = box.querySelector(".gov-seats-row");
-   const noteEl = box.querySelector(".parl-dynamic-note");
+  const noteEl = box.querySelector(".parl-dynamic-note");
 
   // عناصر عرض الموبايل
   const mobileNewEl = box.querySelector(".parl-mobile-new-count");
   const mobileTradEl = box.querySelector(".parl-mobile-trad-count");
-
 
   const detailsBtn = box.querySelector(".parl-advanced-toggle");
   const resultsContainer = box.querySelector(".parl-results-table-container");
 
   if (!slider || !nationalListsSelect || !seatsRow) return;
 
-  // إنشاء دوائر المقاعد (٣٢٩)
+  /* -------- إنشاء دوائر المقاعد (٣٢٩) -------- */
   const circles = [];
   seatsRow.innerHTML = "";
-  for (let i = 0; i < TOTAL_PARLIAMENT_SEATS; i += 1) {
+   for (let i = 0; i < TOTAL_PARLIAMENT_SEATS; i += 1) {
     const circle = document.createElement("div");
     circle.classList.add("seat-circle");
     circle.textContent = i + 1;
 
-    // الدائرة رقم 165 (index = 164) أزرق
     if (i === PARLIAMENT_MAJORITY - 1) {
       circle.classList.add("seat-circle--majority-marker");
     }
 
-    // الدائرة رقم 110 (index = 109) وردي
-    if (i === 110 - 1) {
+    if (i === PARLIAMENT_THIRD - 1) {
       circle.classList.add("seat-circle--third-marker");
     }
 
@@ -431,17 +487,19 @@ function initParliamentProgramJoker() {
     circles.push(circle);
   }
 
+  // رسم الهلال لأول مرة + عند تغيير حجم الشاشة
+  const applyArcLayout = () => layoutParliamentArc(seatsRow, circles);
+  applyArcLayout();
+  window.addEventListener("resize", applyArcLayout);
 
-  // نحسب عدد المقاطعين لكل محافظة مرة واحدة
+
+  /* -------- تجهيز بيانات المقاطعين لكل محافظة -------- */
   const govData = parliamentGovernoratesData.map((gov) => {
     const eligible = Math.max(gov.eligible || 0, 0);
     const voted = Math.max(gov.voted || 0, 0);
     const boycotters = Math.max(eligible - voted, 0);
 
-    return {
-      ...gov,
-      boycotters,
-    };
+    return { ...gov, boycotters };
   });
 
   let lastSummary = null;
@@ -484,8 +542,7 @@ function initParliamentProgramJoker() {
       totalSeatsAll += seatsGeneral + seatsQuota;
 
       const newVotesGov = boycotters * participation;
-      const votesPerNationalList =
-        listsCount > 0 ? newVotesGov / listsCount : 0;
+      const votesPerNationalList = listsCount > 0 ? newVotesGov / listsCount : 0;
 
       const nationalListIds = [];
       const partiesAlloc = [];
@@ -576,20 +633,19 @@ function initParliamentProgramJoker() {
       nationalSeats: totalNationalSeatsByList,
     };
 
-    // تلوين دوائر البرلمان حسب مجموع مقاعد التجمّعات الوطنية
+    /* -------- تلوين دوائر البرلمان حسب مقاعد التجمّعات الوطنية -------- */
     const totalNationalAllLists = Object.values(
       totalNationalSeatsByList
     ).reduce((sum, v) => sum + v, 0);
 
     circles.forEach((circle, index) => {
       circle.classList.remove("seat-circle--green");
+      circle.classList.remove("seat-circle--target", "seat-circle--rest");
 
       if (index < PARLIAMENT_MAJORITY) {
         circle.classList.add("seat-circle--target");
-        circle.classList.remove("seat-circle--rest");
       } else {
         circle.classList.add("seat-circle--rest");
-        circle.classList.remove("seat-circle--target");
       }
 
       if (index < totalNationalAllLists) {
@@ -597,36 +653,30 @@ function initParliamentProgramJoker() {
       }
     });
 
-        if (noteEl) {
+    /* -------- النص التوضيحي تحت السلايدر -------- */
+    if (noteEl) {
       if (totalNationalAllLists >= PARLIAMENT_MAJORITY) {
-        // وصلوا نصف +1
         noteEl.textContent =
           "الآن التيارات الوطنية تمثل نصف + ١ من مقاعد مجلس النواب، ولا يمكن تمرير أي قانون دون موافقة هذه التيارات، وإمكانية تشريع القوانين الإصلاحية أصبحت أكبر بكثير.";
-      } else if (totalNationalAllLists >= 110) {
-        // وصلوا ثلث المجلس
+      } else if (totalNationalAllLists >= PARLIAMENT_THIRD) {
         noteEl.textContent =
-          "الآن التيارات الوطنية تشكل ثلث مجلس النواب، ويمكنها إحداث تغيير حقيقي .";
+          "الآن التيارات الوطنية تشكل ثلث مجلس النواب، ويمكنها إحداث تغيير حقيقي في موازين القوى داخل المجلس.";
       } else if (totalNationalAllLists > 0) {
-        // أقل من ثلث، لكن أكو تأثير
         noteEl.textContent =
           "كلما ارتفعت نسبة مشاركة المقاطعين لصالح التيارات الوطنية، يُنتزع مقعد بعد آخر من الأحزاب التقليدية في مختلف المحافظات.";
       } else {
-        // صفر مقاعد وطنية
         noteEl.textContent =
           "عند بقاء المقاطعين في البيت، تبقى خريطة المقاعد تقريباً كما هي، لصالح الأحزاب التقليدية.";
       }
     }
 
-        // تحديث أرقام الموبايل (نواب جدد / تقليديين)
+    /* -------- أرقام الموبايل (نواب جدد / تقليديين) -------- */
     if (mobileNewEl) {
       mobileNewEl.textContent = totalNationalAllLists.toLocaleString("en-US");
     }
     if (mobileTradEl) {
       mobileTradEl.textContent = totalTraditionalSeats.toLocaleString("en-US");
     }
-
-
-
 
     // نخزن الملخص حتى نعيد رسم الجدول عند الحاجة
     lastSummary = {
@@ -647,7 +697,7 @@ function initParliamentProgramJoker() {
     }
   }
 
-  // أحداث السلايدر وعدد التجمعات
+  /* -------- أحداث السلايدر وعدد التجمعات -------- */
   const handleSliderInput = () => {
     // تحديث خفيف وسريع (الدوائر + النص فقط)
     recompute(false);
@@ -666,7 +716,7 @@ function initParliamentProgramJoker() {
     recompute(true);
   });
 
-  // زر إظهار / إخفاء التفاصيل
+  /* -------- زر إظهار / إخفاء التفاصيل -------- */
   if (detailsBtn && resultsContainer) {
     resultsContainer.setAttribute("hidden", "hidden");
 

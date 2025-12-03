@@ -1,484 +1,548 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>عدم المشاركة في الانتخابات!</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>عدم المشاركة في الانتخابات!</title>
 
-  <!-- Premium Clean CSS -->
-  <link rel="stylesheet" href="css/style_new_premium.css" />
+    <!-- Premium Clean CSS -->
+    <link rel="stylesheet" href="css/style_new_premium.css" />
 
-  <style>
-    /* ========== Elegant Fade Page Load ========== */
-   body {
-  opacity: 1;
-  transition: none;
-}
-
-
-    /* ========== Participation Page Wrapper ========== */
-    .participation-wrapper {
-      max-width: 900px;
-      margin: 40px auto;
-      background: #13204d;
-      border-radius: 14px;
-      padding-bottom: 40px;
-      overflow: hidden;
-      background-repeat: no-repeat;
-      background-position: center 180px;
-      background-size: 52%;
-    }
-
-    /* Title Bar */
-    .page-title {
-      text-align: center;
-      padding: 28px;
-      color: #fff;
-      font-size: 28px;
-      border-bottom: 2px solid rgba(255, 255, 255, 0.25);
-      background: #0c1a3a;
-      font-weight: bold;
-    }
-
-    /* Accordion Clean Layout */
-    .accordion-section {
-      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-    }
-
-    .accordion-btn {
-      width: 100%;
-      background: #1a3a6d;
-      padding: 18px 22px;
-      font-size: 20px;
-      font-weight: 600;
-      border: none;
-      cursor: pointer;
-      color: #fff;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      transition: background 0.25s ease;
-    }
-
-    .accordion-btn:hover {
-      background: #235099;
-    }
-
-    .accordion-btn .icon {
-      font-size: 26px;
-      transition: transform 0.3s ease;
-    }
-
-    .accordion-btn.active .icon {
-      transform: rotate(45deg);
-    }
-
-    /* Content */
-    .accordion-content {
-      max-height: 0;
-      overflow: hidden;
-      background: linear-gradient(to left, #0d244f, #0f356e);
-      padding: 0 22px;
-      color: white;
-      font-size: 19px;
-      line-height: 2;
-      transition: max-height 0.35s ease, padding 0.3s ease;
-      text-align: justify;
-    }
-
-    .accordion-content.open {
-      padding: 22px;
-    }
-
-    .accordion-content p span {
-      font-weight: bold;
-      color: #82b7ff;
-    }
-
-    /* Inline mirror slider above each Saint-Laguë table */
-    .parl-inline-slider {
-      margin: 16px 0 10px;
-    }
-
-    .parl-inline-slider .gov-slider {
-      width: 100%;
-    }
-
-    .gov-slider-label--small {
-      font-size: 0.9em;
-      opacity: 0.9;
-    }
-
-    @media (max-width: 700px) {
-      .participation-wrapper {
-        margin: 20px 10px;
-        background-size: 65%;
-        background-position: center 130px;
+    <style>
+      /* ========== إلغاء تأثير الفيد القديم ========== */
+      body {
+        opacity: 1;
+        transition: none;
       }
 
+      /* ========== حاوية صفحة "عدم المشاركة" ========== */
+      .participation-wrapper {
+        max-width: 900px;
+        margin: 40px auto;
+        background: #13204d;
+        border-radius: 14px;
+        padding-bottom: 40px;
+        overflow: hidden;
+        background-repeat: no-repeat;
+        background-position: center 180px;
+        background-size: 52%;
+      }
+
+      /* شريط العنوان */
       .page-title {
-        font-size: 24px;
+        text-align: center;
+        padding: 28px;
+        color: #fff;
+        font-size: 28px;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.25);
+        background: #0c1a3a;
+        font-weight: bold;
+      }
+
+      /* آكورديون */
+      .accordion-section {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
       }
 
       .accordion-btn {
-        font-size: 18px;
+        width: 100%;
+        background: #1a3a6d;
+        padding: 18px 22px;
+        font-size: 20px;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        color: #fff;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: background 0.25s ease;
+      }
+
+      .accordion-btn:hover {
+        background: #235099;
+      }
+
+      .accordion-btn .icon {
+        font-size: 26px;
+        transition: transform 0.3s ease;
+      }
+
+      .accordion-btn.active .icon {
+        transform: rotate(45deg);
       }
 
       .accordion-content {
-        font-size: 17px;
+        max-height: 0;
+        overflow: hidden;
+        background: linear-gradient(to left, #0d244f, #0f356e);
+        padding: 0 22px;
+        color: #ffffff;
+        font-size: 19px;
+        line-height: 2;
+        transition: max-height 0.35s ease, padding 0.3s ease;
+        text-align: justify;
       }
-    }
-  </style>
-</head>
 
-<body>
-  <div id="header"></div>
+      .accordion-content.open {
+        padding: 22px;
+      }
 
-  <!-- Main Content -->
-  <div class="main-shell">
-    <section class="participation-wrapper">
-      <h2 class="page-title">عدم المشاركة في الانتخابات!!</h2>
+      .accordion-content p span {
+        font-weight: bold;
+        color: #82b7ff;
+      }
 
-      <!-- Accordion Items -->
-      <!-- 1 -->
-      <div class="accordion-section">
-        <button type="button" class="accordion-btn">
-          <span>هل يؤدي انخفاض نسبة المشاركة في الانتخابات إلى فقدان مجلس النواب لشرعيته القانونية؟</span>
-          <span class="icon">+</span>
-        </button>
+      /* السلايدر الصغير اللي فوق كل جدول */
+      .parl-inline-slider {
+        margin: 16px 0 10px;
+      }
 
-        <div class="accordion-content">
-          <p>
-            <span>انخفاض نسبة المشاركة</span> لا يلغي
-            <span>الشرعية القانونية</span> للمجلس ما دامت الانتخابات تمت وفق القانون.
-            <br /><br />
-            ولا يوجد أي نص في <span>الدستور العراقي</span> أو
-            <span>القوانين الدولية</span> يربط الشرعية بنسبة المشاركة.
-            <br /><br />
-            الشرعية القانونية تبقى ثابتة…
-            المتأثر فقط هو:
-            <span>الشرعية الشعبية وقوة التمثيل السياسي.</span>
-          </p>
+      .parl-inline-slider .gov-slider {
+        width: 100%;
+      }
+
+      .gov-slider-label--small {
+        font-size: 0.9em;
+        opacity: 0.9;
+      }
+
+      @media (max-width: 700px) {
+        .participation-wrapper {
+          margin: 20px 10px;
+          background-size: 65%;
+          background-position: center 130px;
+        }
+
+        .page-title {
+          font-size: 24px;
+        }
+
+        .accordion-btn {
+          font-size: 18px;
+        }
+
+        .accordion-content {
+          font-size: 17px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- الهيدر يجي من header.html -->
+    <div id="header"></div>
+
+    <!-- المحتوى الرئيسي -->
+    <main class="main-shell">
+      <!-- قسم الأسئلة عن عدم المشاركة -->
+      <section class="participation-wrapper">
+        <h2 class="page-title">عدم المشاركة في الانتخابات!!</h2>
+
+        <!-- 1 -->
+        <div class="accordion-section">
+          <button type="button" class="accordion-btn">
+            <span>
+              هل يؤدي انخفاض نسبة المشاركة في الانتخابات إلى فقدان مجلس
+              النواب لشرعيته القانونية؟
+            </span>
+            <span class="icon">+</span>
+          </button>
+
+          <div class="accordion-content">
+            <p>
+              <span>انخفاض نسبة المشاركة</span> لا يلغي
+              <span>الشرعية القانونية</span> للمجلس ما دامت الانتخابات تمت وفق
+              القانون.
+              <br /><br />
+              ولا يوجد أي نص في <span>الدستور العراقي</span> أو
+              <span>القوانين الدولية</span> يربط الشرعية بنسبة المشاركة.
+              <br /><br />
+              الشرعية القانونية تبقى ثابتة… المتأثر فقط هو:
+              <span>الشرعية الشعبية وقوة التمثيل السياسي.</span>
+            </p>
+          </div>
         </div>
-      </div>
 
-      <!-- 2 -->
-      <div class="accordion-section">
-        <button type="button" class="accordion-btn">
-          <span>هل هناك أمل بالتغيير عبر صناديق الاقتراع؟</span>
-          <span class="icon">+</span>
-        </button>
+        <!-- 2 -->
+        <div class="accordion-section">
+          <button type="button" class="accordion-btn">
+            <span>هل هناك أمل بالتغيير عبر صناديق الاقتراع؟</span>
+            <span class="icon">+</span>
+          </button>
 
-        <div class="accordion-content">
-          <p>
-            <span>حسب الأمم المتحدة والمفوضية العليا لسنة 2025:</span>
-            <br /><br />
-            <span>46 مليون</span> — عدد سكان العراق<br />
-            <span>28 مليون</span> — أعمارهم 18 سنة فما فوق<br />
-            <span>21.4 مليون</span> — مسجلين<br />
-            <span>12 مليون</span> — شاركوا فعليًا<br />
-            <span>16 مليون</span> — لم يشاركوا!
-            <br /><br />
-            نعم… <span>هناك أمل كبير</span>.
-            لكن الأمل ليس بالسياسيين، بل
-            <span>بالأغلبية الصامتة نفسها.</span>
-            <br /><br />
-            لو فقط <span>نصف 16 مليون</span> شاركوا:
-            <br />
-            يدخل للمجلس عدد يكفي لتكوين
-            <span>ثلث معطّل وطني</span>
-            يمنع أي حكومة طائفية من المرور.
-            <br /><br />
-            <span>التغيير لا يحتاج معجزة…</span>
-            فقط يحتاج أن تتحول “الأغلبية الصامتة” إلى أغلبية مشاركة.
-          </p>
+          <div class="accordion-content">
+            <p>
+              <span>حسب الأمم المتحدة والمفوضية العليا لسنة 2025:</span>
+              <br /><br />
+              <span>46 مليون</span> — عدد سكان العراق<br />
+              <span>28 مليون</span> — أعمارهم 18 سنة فما فوق<br />
+              <span>21.4 مليون</span> — مسجلين<br />
+              <span>12 مليون</span> — شاركوا فعليًا<br />
+              <span>16 مليون</span> — لم يشاركوا!
+              <br /><br />
+              نعم… <span>هناك أمل كبير</span>. لكن الأمل ليس بالسياسيين، بل
+              <span>بالأغلبية الصامتة نفسها.</span>
+              <br /><br />
+              لو فقط <span>نصف 16 مليون</span> شاركوا:
+              <br />
+              يدخل للمجلس عدد يكفي لتكوين
+              <span>ثلث معطّل وطني</span>
+              يمنع أي حكومة طائفية من المرور.
+              <br /><br />
+              <span>التغيير لا يحتاج معجزة…</span>
+              فقط يحتاج أن تتحول “الأغلبية الصامتة” إلى أغلبية مشاركة.
+            </p>
+          </div>
         </div>
-      </div>
 
-      <!-- 3 -->
-      <div class="accordion-section">
-        <button type="button" class="accordion-btn">
-          <span>هل الامتناع عن التصويت يعاقب السياسيين الفاسدين؟</span>
-          <span class="icon">+</span>
-        </button>
+        <!-- 3 -->
+        <div class="accordion-section">
+          <button type="button" class="accordion-btn">
+            <span>هل الامتناع عن التصويت يعاقب السياسيين الفاسدين؟</span>
+            <span class="icon">+</span>
+          </button>
 
-        <div class="accordion-content">
-          <p>
-            بالعكس:
-            <span>الامتناع يخدم السياسي الفاسد</span> أكثر من غيره.
-            <br /><br />
-            لأنه يملك:
-            <br />
-            • قاعدة ثابتة<br />
-            • ماكينة انتخابية<br />
-            • جمهور ولائي
-            <br /><br />
-            عندما يقعد المستقلون في البيت:
-            <br />
-            • يقل عدد الأصوات<br />
-            • تنخفض العتبة<br />
-            • يزيد احتمال فوز الفاسد
-            <span>بأصوات قليلة جدًا</span>
-            <br /><br />
-            الامتناع ليس “رفضًا”…
-            هو انسحاب من المعركة.
-            <br /><br />
-            <span>الخلاصة:</span>
-            الجلوس في البيت
-            <span>يكافئ السياسي الفاسد</span>
-            بمقعد سهل بلا منافسة.
-          </p>
+          <div class="accordion-content">
+            <p>
+              بالعكس:
+              <span>الامتناع يخدم السياسي الفاسد</span> أكثر من غيره.
+              <br /><br />
+              لأنه يملك:
+              <br />
+              • قاعدة ثابتة<br />
+              • ماكينة انتخابية<br />
+              • جمهور ولائي
+              <br /><br />
+              عندما يقعد المستقلون في البيت:
+              <br />
+              • يقل عدد الأصوات<br />
+              • تنخفض العتبة<br />
+              • يزيد احتمال فوز الفاسد
+              <span>بأصوات قليلة جدًا</span>
+              <br /><br />
+              الامتناع ليس “رفضًا”… هو انسحاب من المعركة.
+              <br /><br />
+              <span>الخلاصة:</span>
+              الجلوس في البيت
+              <span>يكافئ السياسي الفاسد</span>
+              بمقعد سهل بلا منافسة.
+            </p>
+          </div>
         </div>
-      </div>
 
-      <!-- 4 -->
-      <div class="accordion-section">
-        <button type="button" class="accordion-btn">
-          <span>هل غياب البديل سبب منطقي لعدم المشاركة؟</span>
-          <span class="icon">+</span>
-        </button>
+        <!-- 4 -->
+        <div class="accordion-section">
+          <button type="button" class="accordion-btn">
+            <span>هل غياب البديل سبب منطقي لعدم المشاركة؟</span>
+            <span class="icon">+</span>
+          </button>
 
-        <div class="accordion-content">
-          <p>
-            قد يبدو غياب البديل “المثالي” سببًا للمقاطعة…
-            لكنه في الحقيقة أحد
-            <span>أخطر الأخطاء</span> التي يقترفها الناخب.
-            <br /><br />
-            لا يوجد مرشح يلبي طموحات كل الناس 100%.
-            هذا طبيعي في كل دول العالم.
-            <br /><br />
-            المقاطعة لا تصنع بديلًا…
-            بل تُبقي الأحزاب القديمة مسيطرة لأن جمهورها
-            <span>لا يقاطع</span>.
-            <br /><br />
-            <span>الخلاصة:</span><br />
-            البديل المثالي غير موجود…
-            والمقاطعة هي التي تمنع ظهور البدائل الجديدة.
-          </p>
+          <div class="accordion-content">
+            <p>
+              قد يبدو غياب البديل “المثالي” سببًا للمقاطعة… لكنه في الحقيقة أحد
+              <span>أخطر الأخطاء</span> التي يقترفها الناخب.
+              <br /><br />
+              لا يوجد مرشح يلبي طموحات كل الناس 100%.
+              هذا طبيعي في كل دول العالم.
+              <br /><br />
+              المقاطعة لا تصنع بديلًا… بل تُبقي الأحزاب القديمة مسيطرة لأن
+              جمهورها
+              <span>لا يقاطع</span>.
+              <br /><br />
+              <span>الخلاصة:</span><br />
+              البديل المثالي غير موجود… والمقاطعة هي التي تمنع ظهور البدائل
+              الجديدة.
+            </p>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- بوكس الجوكر لمجلس النواب (نموذج وطني) -->
-    <section class="gov-program-box parl-program-box--joker">
-      <h2 class="gov-program-title">
-        كيف يمكن لمشاركة المقاطعين أن تغيّر مجلس النواب العراقي؟
-      </h2>
+      <!-- بوكس الجوكر لمجلس النواب (نموذج وطني) -->
+      <section class="gov-program-box parl-program-box--joker">
+        <div class="parl-joker-layout">
+          <!-- العنوان + مقدمة قصيرة -->
+          <header class="parl-joker-header">
+            <h2 class="gov-program-title">
+ ماذا يحدث لو شاركت الأغلبية الصامتة في انتخابات مجلس النواب 2025؟
+            </h2>
 
-      <p class="gov-program-text">
-        هذا النموذج يوضّح تأثير مشاركة جزء من المقاطعين على توزيع مقاعد مجلس النواب.
-      </p>
+            <p class="gov-program-text">
+              هذا النموذج يوضّح بالأرقام كيف تتحوّل مقاعد من الأحزاب التقليدية
+              إلى التجمّعات الوطنية عندما يقرّر جزء من المقاطعين المشاركة.
+            </p>
+          </header>
 
-      <div class="gov-program-controls">
-        <div class="gov-control-block">
-          <label for="national-lists-count" class="gov-slider-label">
-            عدد التجمّعات الوطنية المشاركة بالتغيير:
+          <!-- الجسم الرئيسي: هلال + سلايدر -->
+          <div class="parl-joker-main">
+            <!-- 1) الهلال البصري (٣٢٩ مقعد) -->
+            <div class="parl-joker-visual">
+              <h3 class="parl-joker-subtitle">
+                خريطة مقاعد مجلس النواب (٣٢٩ مقعدًا)
+              </h3>
+
+              <!-- حاوية الهلال -->
+              <div class="parl-seats-arc">
+                <!-- دوائر ٣٢٩ مقعد (الهلال) -->
+                <div
+                  class="gov-seats-row"
+                  aria-label="مقاعد مجلس النواب العراقي"
+                ></div>
+              </div>
+
+              <!-- ليجند للهلال يوضّح الألوان -->
+              <div class="parl-joker-legend">
+                <span class="parl-legend-item">
+                  <span class="parl-legend-dot parl-legend-dot--green"></span>
+                  مقاعد التجمّعات الوطنية الجديدة
+                </span>
+
+                <span class="parl-legend-item">
+                  <span class="parl-legend-dot parl-legend-dot--blue"></span>
+                  مقعد الأغلبية (١٦٥)
+                </span>
+
+                <span class="parl-legend-item">
+                  <span class="parl-legend-dot parl-legend-dot--pink"></span>
+                  مقعد الثلث المعطِّل (١١٠)
+                </span>
+              </div>
+            </div>
+
+            <!-- 2) السلايدر + الأرقام -->
+            <div class="parl-joker-controls">
+              <div class="gov-program-controls">
+                <!-- اختيار عدد التجمّعات الوطنية -->
+                <div class="gov-control-block">
+                  <label for="national-lists-count" class="gov-slider-label">
+                    عدد التجمّعات الوطنية المشاركة بالتغيير:
+                  </label>
+
+                  <select
+                    id="national-lists-count"
+                    class="national-lists-count"
+                  >
+                    <option value="1" selected>تجمع وطني ١</option>
+                    <option value="2">تجمعان وطنيان ٢</option>
+                    <option value="3">ثلاثة تجمّعات وطنية ٣</option>
+                    <option value="4">أربعة تجمّعات وطنية ٤</option>
+                  </select>
+
+                  <p class="gov-small-note">
+                    في حالة وجود أكثر من تجمع وطني، يتم تقسيم أصوات المشاركين
+                    الجدد بينهم بالتساوي.
+                  </p>
+                </div>
+
+                <!-- السلايدر الرئيسي + الأرقام تحته -->
+                <div class="gov-control-block">
+                  <label for="parl-gov-slider" class="gov-slider-label">
+                    نسبة المقاطعين الذين يقررون المشاركة بالتغيير:
+                    <span class="slider-value">30٪</span>
+                  </label>
+
+                  <div class="gov-slider-wrapper">
+                    <input
+                      id="parl-gov-slider"
+                      type="range"
+                      class="gov-slider"
+                      min="0"
+                      max="100"
+                      step="1"
+                      value="30"
+                    />
+                  </div>
+
+                  <!-- ملاحظة تحت السلايدر (نص ثابت + نص ديناميكي من JS) -->
+                  <p class="gov-small-note">
+                    <span class="parl-static-text">
+                      حرّك المؤشر لترى كيف تنتقل المقاعد من الأحزاب التقليدية
+                      إلى التجمّعات الوطنية.
+                    </span>
+                    <br />
+                    <span class="parl-dynamic-note"></span>
+                  </p>
+
+                  <!-- ملخص الأرقام (يُحدَّث من JS) -->
+                  <div class="parl-mobile-seats-summary">
+                    <div
+                      class="parl-mobile-seats-half parl-mobile-seats-half--new"
+                    >
+                      <div class="parl-mobile-number parl-mobile-new-count">
+                        0
+                      </div>
+                      <div class="parl-mobile-label">
+                        نواب جدد من التجمّعات الوطنية
+                      </div>
+                    </div>
+
+                    <div
+                      class="parl-mobile-seats-half parl-mobile-seats-half--trad"
+                    >
+                      <div class="parl-mobile-number parl-mobile-trad-count">
+                        329
+                      </div>
+                      <div class="parl-mobile-label">
+                        نواب الأحزاب التقليدية
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- جملة تفسيرية بسيطة -->
+              <p class="gov-program-note parl-joker-explainer">
+                كل نقطة خضراء في الهلال تمثّل نائبًا جديدًا من التجمّعات
+                الوطنية. كلما ارتفعت نسبة مشاركة المقاطعين، ترى المقاعد تُنتزع
+                مقعدًا بعد آخر من الأحزاب التقليدية وتتحوّل إلى اللون الأخضر.
+              </p>
+            </div>
+          </div>
+
+          <!-- خطوات توضيحية مبسّطة -->
+          <div class="parl-joker-steps">
+            <div class="parl-step">
+              <span class="parl-step-number">١</span>
+              <p>اختر كم تجمّع وطني واقعي يمكن أن يتشكّل (١–٤).</p>
+            </div>
+            <div class="parl-step">
+              <span class="parl-step-number">٢</span>
+              <p>حرّك المؤشر لتجربة سيناريوهات مشاركة مختلفة (١٠٪، ٢٠٪، ٣٠٪…).</p>
+            </div>
+            <div class="parl-step">
+              <span class="parl-step-number">٣</span>
+              <p>
+                راقب الهلال: عندما يتجاوز عدد النقاط الخضراء ١١٠ أو ١٦٥، يتغيّر
+                شكل السلطة فعليًا.
+              </p>
+            </div>
+          </div>
+
+          <!-- ملاحظة مصدر البيانات -->
+          <p class="gov-program-note parl-data-source">
+            <em>
+              تم الحصول على جميع البيانات من
+              <a
+                href="https://ihec.iq/final-results-2025/"
+                target="_blank"
+                rel="noopener"
+              >
+                صفحة المفوضية العليا للانتخابات
+              </a>
+              و
+              <a
+                href="https://iraq.un.org/sites/default/files/2025-11/Information%20package%202025%20CoR%20elections_06112025_EN.pdf#page=5"
+                target="_blank"
+                rel="noopener"
+              >
+                الأمم المتحدة في العراق (الصفحة الخامسة من الملف)
+              </a>.
+            </em>
+          </p>
+
+          <!-- زر إظهار / إخفاء التفاصيل -->
+          <button
+            type="button"
+            class="gov-advanced-toggle parl-advanced-toggle"
+          >
+            إظهار التفاصيل
+          </button>
+
+          <!-- هنا JS يولّد جدول النتائج ويتحدّث مع السلايدر -->
+          <div class="parl-results-table-container" hidden></div>
+        </div>
+      </section>
+
+      <!-- تمبلت السلايدر الصغير فوق كل جدول محافظة -->
+      <template id="parl-inline-slider-template">
+        <div class="parl-inline-slider">
+          <label class="gov-slider-label gov-slider-label--small">
+            نفس نسبة مشاركة المقاطعين المستعملة في الأعلى:
+            <span class="parl-inline-slider-value">30٪</span>
           </label>
-          <select id="national-lists-count" class="national-lists-count">
-            <option value="1" selected>تجمع وطني ١</option>
-            <option value="2">تجمعان وطنيان ٢</option>
-            <option value="3">ثلاثة تجمّعات وطنية ٣</option>
-            <option value="4">أربعة تجمّعات وطنية ٤</option>
-          </select>
-          <p class="gov-small-note">
-            في حالة وجود أكثر من تجمع وطني، يتم تقسيم أصوات المشاركين الجدد بينهم بالتساوي.
-          </p>
-        </div>
 
-        <div class="gov-control-block">
-          <label for="parl-gov-slider" class="gov-slider-label">
-            نسبة المقاطعين الذين يقررون المشاركة بالتغيير:
-            <span class="slider-value">30٪</span>
-          </label>
           <input
-            id="parl-gov-slider"
             type="range"
-            class="gov-slider"
+            class="gov-slider parl-inline-slider-input"
             min="0"
             max="100"
             step="1"
             value="30"
           />
-         <p class="gov-small-note">
-  <span class="parl-static-text">
-    حرّك المؤشر لترى كيف تنتقل المقاعد من الأحزاب التقليدية إلى التجمّعات الوطنية.
-  </span>
-  <br />
-  <span class="parl-dynamic-note"></span>
-</p>
-
         </div>
-      </div>
+      </template>
 
-      <!-- دوائر ٣٢٩ مقعد -->
-      <div class="gov-seats-row" aria-label="مقاعد مجلس النواب العراقي"></div>
-
-
-      <!-- دوائر ٣٢٩ مقعد -->
-      <div class="gov-seats-row" aria-label="مقاعد مجلس النواب العراقي"></div>
-
-      <!-- عرض خاص للموبايل: المقاعد الجديدة مقابل التقليدية -->
-      <div class="parl-mobile-seats-summary">
-        <div class="parl-mobile-seats-half parl-mobile-seats-half--new">
-          <div class="parl-mobile-number parl-mobile-new-count">0</div>
-          <div class="parl-mobile-label">
-            نواب جدد من التجمّعات الوطنية
-          </div>
-        </div>
-
-        <div class="parl-mobile-seats-half parl-mobile-seats-half--trad">
-          <div class="parl-mobile-number parl-mobile-trad-count">329</div>
-          <div class="parl-mobile-label">
-            نواب الأحزاب التقليدية
-          </div>
-        </div>
-      </div>
-
-      <p class="gov-program-note">
-        ...
-      </p>
-
-
-
-
-
-
-
-
-
-     <p class="gov-program-note">
-  <em>
-    تم الحصول على جميع البيانات من
-    <a href="https://ihec.iq/final-results-2025/" target="_blank" rel="noopener">
-      صفحة المفوضية العليا للانتخابات
-    </a>
-    و
-    <a href="https://iraq.un.org/sites/default/files/2025-11/Information%20package%202025%20CoR%20elections_06112025_EN.pdf#page=5"
-       target="_blank" rel="noopener">
-      الأمم المتحدة في العراق (الصفحة الخامسة من الملف)
-    </a>.
-  </em>
-</p>
-
-
-      <!-- زر إظهار / إخفاء التفاصيل -->
-      <button type="button" class="gov-advanced-toggle parl-advanced-toggle">
-        إظهار التفاصيل
-      </button>
-
-      <!-- هنا JS يولّد جدول النتائج ويتحدّث مع السلايدر -->
-      <div class="parl-results-table-container" hidden></div>
-    </section>
-
-    <!-- Template for mirror slider above each Saint-Laguë table -->
-    <template id="parl-inline-slider-template">
-      <div class="parl-inline-slider">
-        <label class="gov-slider-label gov-slider-label--small">
-          نفس نسبة مشاركة المقاطعين المستعملة في الأعلى:
-          <span class="parl-inline-slider-value">30٪</span>
-        </label>
-        <!-- نفس كلاس السلايدر الرئيسي لضمان نفس الشكل والحجم -->
-        <input
-          type="range"
-          class="gov-slider parl-inline-slider-input"
-          min="0"
-          max="100"
-          step="1"
-          value="30"
-          
-        />
-      </div>
-    </template>
-
-
-
-
-
-<div class="tiktok-wrapper" dir="rtl">
-  <blockquote
-    class="tiktok-embed"
-    cite="https://www.tiktok.com/@MS4wLjABAAAAnx5mcEJLWPHwJiS6tktzA7ZT0BIusghot0KDf9tuHDupDzn5Ov1aNyCibOFWrYOt/video/7579172401569631495"
-    data-video-id="7579172401569631495"
-  >
-    <section>
-      <a
-        target="_blank"
-        title="@ابو لؤلؤه"
-        href="https://www.tiktok.com/@MS4wLjABAAAAnx5mcEJLWPHwJiS6tktzA7ZT0BIusghot0KDf9tuHDupDzn5Ov1aNyCibOFWrYOt?refer=embed"
-      >
-        @ابو لؤلؤه
-      </a>
-
-      <p>
-        رداً على سؤال: ما هي إنجازات عامر عبد الجبار عندما كان وزيراً للنقل؟
-        هذا المقطع يقدّم جزءاً من أهم المشاريع والإنجازات في القطاع البحري والموانئ.
-      </p>
-
-      <p class="tiktok-tags">
-        <a
-          title="تجمع_الفاو_زاخو"
-          target="_blank"
-          href="https://www.tiktok.com/tag/%D8%AA%D8%AC%D9%85%D8%B9_%D8%A7%D9%84%D9%81%D8%A7%D9%88_%D8%B2%D8%A7%D8%AE%D9%88?refer=embed"
+      <!-- قسم فيديو تيك توك -->
+      <section class="tiktok-wrapper" dir="rtl">
+        <blockquote
+          class="tiktok-embed"
+          cite="https://www.tiktok.com/@MS4wLjABAAAAnx5mcEJLWPHwJiS6tktzA7ZT0BIusghot0KDf9tuHDupDzn5Ov1aNyCibOFWrYOt/video/7579172401569631495"
+          data-video-id="7579172401569631495"
         >
-          #تجمع_الفاو_زاخو
-        </a>
-        <a
-          title="كلنا_عامر_عبد_الجبار"
-          target="_blank"
-          href="https://www.tiktok.com/tag/%D9%83%D9%84%D9%86%D8%A7_%D8%B9%D8%A7%D9%85%D8%B1_%D8%B9%D8%A8%D8%AF_%D8%A7%D9%84%D8%AC%D8%A8%D8%A7%D8%B1?refer=embed"
-        >
-          #كلنا_عامر_عبد_الجبار
-        </a>
-      </p>
+          <section>
+            <a
+              target="_blank"
+              title="@ابو لؤلؤه"
+              href="https://www.tiktok.com/@MS4wLjABAAAAnx5mcEJLWPHwJiS6tktzA7ZT0BIusghot0KDf9tuHDupDzn5Ov1aNyCibOFWrYOt?refer=embed"
+            >
+              @ابو لؤلؤه
+            </a>
 
-      <a
-        target="_blank"
-        title="♬ الصوت الأصلي - تجمع الفاو زاخو"
-        href="https://www.tiktok.com/music/%D8%A7%D9%84%D8%B5%D9%88%D8%AA-%D8%A7%D9%84%D8%A3%D8%B5%D9%84%D9%8A-7579172449217366802?refer=embed"
-      >
-        ♬ الصوت الأصلي - تجمع الفاو زاخو
-      </a>
-    </section>
-  </blockquote>
-</div>
+            <p>
+              رداً على سؤال: ما هي إنجازات عامر عبد الجبار عندما كان وزيراً
+              للنقل؟ هذا المقطع يقدّم جزءاً من أهم المشاريع والإنجازات في
+              القطاع البحري والموانئ.
+            </p>
 
-<!-- مرة واحدة فقط في نهاية الصفحة (لو عندك أكثر من فيديو لا تكرر السكربت) -->
-<script async src="https://www.tiktok.com/embed.js"></script>
+            <p class="tiktok-tags">
+              <a
+                title="تجمع_الفاو_زاخو"
+                target="_blank"
+                href="https://www.tiktok.com/tag/%D8%AA%D8%AC%D9%85%D8%B9_%D8%A7%D9%84%D9%81%D8%A7%D9%88_%D8%B2%D8%A7%D8%AE%D9%88?refer=embed"
+              >
+                #تجمع_الفاو_زاخو
+              </a>
+              <a
+                title="كلنا_عامر_عبد_الجبار"
+                target="_blank"
+                href="https://www.tiktok.com/tag/%D9%83%D9%84%D9%86%D8%A7_%D8%B9%D8%A7%D9%85%D8%B1_%D8%B9%D8%A8%D8%AF_%D8%A7%D9%84%D8%AC%D8%A8%D8%A7%D8%B1?refer=embed"
+              >
+                #كلنا_عامر_عبد_الجبار
+              </a>
+            </p>
 
+            <a
+              target="_blank"
+              title="♬ الصوت الأصلي - تجمع الفاو زاخو"
+              href="https://www.tiktok.com/music/%D8%A7%D9%84%D8%B5%D9%88%D8%AA-%D8%A7%D9%84%D8%A3%D8%B5%D9%84%D9%8A-7579172449217366802?refer=embed"
+            >
+              ♬ الصوت الأصلي - تجمع الفاو زاخو
+            </a>
+          </section>
+        </blockquote>
 
+        <!-- سكربت التضمين من تيك توك -->
+        <script async src="https://www.tiktok.com/embed.js"></script>
+      </section>
 
+      <!-- الفوتر يجي من footer.html -->
+      <div id="footer"></div>
+    </main>
 
+    <!-- سكربت تحميل الهيدر/الفوتر -->
+    <script src="js/load-layout.js"></script>
+    <!-- سكربتات عامة للموقع -->
+    <script src="js/main.js"></script>
 
+    <!-- سكربت الجوكر لمجلس النواب -->
+    <script type="module" src="data/parliament-program-joker.js"></script>
+    <!-- سكربت الجوكر للمحافظات -->
+    <script type="module" src="data/gov-program-joker.js"></script>
 
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    <div id="footer"></div>
-  </div>
-
-  <!-- Layout / main scripts -->
-  <script src="js/load-layout.js"></script>
-  <script src="js/main.js"></script>
-
-  <!-- استدعاء سكربت الجوكر لمجلس النواب -->
-  <script type="module" src="data/parliament-program-joker.js"></script>
-  <!-- استدعاء سكربت الجوكر للمحافظات -->
-  <script type="module" src="data/gov-program-joker.js"></script>
-
-  <script>
-    window.addEventListener("load", () => {
-      document.body.classList.add("page-loaded");
-    });
-  </script>
-</body>
+    <script>
+      window.addEventListener("load", () => {
+        document.body.classList.add("page-loaded");
+      });
+    </script>
+  </body>
 </html>
