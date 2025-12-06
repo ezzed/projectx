@@ -321,20 +321,24 @@ function renderParliamentResultsTable(summary, container, mainSlider) {
   if (!summary || !container) return;
 
   const { listsCount, sliderValue, rows, totals, govAdvancedList } = summary;
-
   container.innerHTML = "";
 
-  // نص توضيحي أعلى الجدول الوطني
+  // 🔹 كرت خاص للجدول الوطني (نفس ستايل جداول المحافظات)
+  const nationalWrapper = document.createElement("div");
+  nationalWrapper.className = "parl-saintlague-block parl-saintlague-block--national";
+
+  // نص توضيحي أعلى الجدول الوطني داخل الكرت
   const title = document.createElement("p");
   title.className = "gov-small-note";
   title.textContent =
     `توزيع مقاعد مجلس النواب حسب المحافظات عند مشاركة ` +
     `${sliderValue}% من المقاطعين، وبوجود ${listsCount} تجمّع/تجمّعات وطنية.`;
-  container.appendChild(title);
+  nationalWrapper.appendChild(title);
 
   // جدول وطني لكل المحافظات
   const table = document.createElement("table");
   table.className = "gov-advanced-table parl-advanced-table";
+
 
   const thead = document.createElement("thead");
   const headRow = document.createElement("tr");
@@ -423,10 +427,12 @@ function renderParliamentResultsTable(summary, container, mainSlider) {
   tdAll.textContent = totals.totalSeats.toLocaleString("en-US");
   totalTr.appendChild(tdAll);
 
-  tbody.appendChild(totalTr);
+   tbody.appendChild(totalTr);
   table.appendChild(tbody);
 
-  container.appendChild(table);
+  // نحط الجدول داخل الكرت الوطني، ثم الكرت داخل الحاوية الكبيرة
+  nationalWrapper.appendChild(table);
+  container.appendChild(nationalWrapper);
 
   // ========== جداول سانت لوغو لكل محافظة تحت الجدول الوطني ==========
 

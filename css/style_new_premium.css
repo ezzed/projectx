@@ -1422,6 +1422,12 @@ body.dark .gov-slider-note {
   -webkit-overflow-scrolling: touch;
 }
 
+/* الكرت الخاص بالجدول الوطني: بدون مسافة من فوق لأنه أول واحد داخل الحاوية */
+.parl-saintlague-block--national {
+  margin-top: 0;
+}
+
+
 /* عنوان سانت لوغو */
 .parl-saintlague-block h3 {
   margin: 0 0 0.75rem;
