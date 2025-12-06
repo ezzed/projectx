@@ -1395,61 +1395,169 @@ body.dark .gov-slider-note {
 }
 
 /* ========== جعل الجداول ما تطلع خارج الصفحة ========== */
+/* ================================
+   حاويات الجداول (النتائج الوطنية + سانت لوغو)
+   ================================ */
 
 /* الحاوية العامة اللي بداخلها الجداول الوطنية + جداول المحافظات */
 .parl-results-table-container {
   width: 100%;
-  overflow-x: auto; /* سكرول أفقي إذا الجدول أعرض من الشاشة */
-  -webkit-overflow-scrolling: touch; /* سكرول ناعم في الآيفون/الآيباد */
+  margin-top: 1.5rem;
+  padding: 0.75rem;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.25);
+  overflow-x: auto;                 /* سكرول أفقي عند الحاجة */
+  -webkit-overflow-scrolling: touch; /* سكرول ناعم على الآيفون/الآيباد */
 }
 
-/* بلوك سانت لوغو لكل محافظة (نخليه هو أيضاً حاوية scroll) */
+/* بلوك سانت لوغو لكل محافظة (نفس أسلوب الكارد) */
 .parl-saintlague-block {
-  width: 100%;
+  margin-top: 1.5rem;
+  padding: 0.75rem;
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.03);
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.18);
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  margin-top: 1.5rem;
 }
 
-/* الجداول نفسها */
+/* عنوان سانت لوغو */
+.parl-saintlague-block h3 {
+  margin: 0 0 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+/* تلميحة خفيفة للموبايل: اسحب لمشاهدة باقي الأعمدة */
+.parl-results-table-container::after,
+.parl-saintlague-block::after {
+  content: "اسحب لليمين لرؤية باقي الأعمدة ⟶";
+  display: none;
+  font-size: 0.75rem;
+  opacity: 0.7;
+  margin-top: 0.35rem;
+}
+
+@media (max-width: 768px) {
+  .parl-results-table-container::after,
+  .parl-saintlague-block::after {
+    display: block;
+  }
+}
+
+/* ================================
+   الجداول نفسها
+   ================================ */
+
 .parl-results-table-container table,
 .parl-saintlague-block table,
 .gov-advanced-table {
   width: 100%;
   border-collapse: collapse;
-  /* لو تحب تجبر الجدول يكون أعرض من الجوال فتظهر سكرول */
-  min-width: 700px; /* زِدها أو قلّلها حسب ما يعجبك (مثلاً 900px) */
+  /* نجبر الجدول يكون أعرض من الموبايل حتى يطلع Scroll بدل تكسير النصوص */
+  min-width: 720px; /* زِدها لو عندك أعمدة أكثر، مثلاً 880px */
+  font-size: clamp(0.75rem, 0.18vw + 0.7rem, 0.9rem);
 }
 
-/* خلايا أصغر شوية عشان ما تتزاحم – للموبايل/تابلت */
+/* رأس الجدول */
+.gov-advanced-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #eef2ff;
+  color: #111827;
+  text-align: center;
+  padding: 0.5rem 0.6rem;
+  border-bottom: 1px solid #d1d5db;
+  white-space: nowrap;
+}
+
+/* جسم الجدول */
+.gov-advanced-table tbody td {
+  padding: 0.4rem 0.6rem;
+  text-align: center;
+  border-bottom: 1px solid rgba(209, 213, 219, 0.7);
+}
+
+/* صفوف متناوبة (Zebra) لسهولة القراءة */
+.gov-advanced-table tbody tr:nth-child(odd) {
+  background: #f9fafb;
+}
+
+.gov-advanced-table tbody tr:nth-child(even) {
+  background: #ffffff;
+}
+
+/* صف المجموع الكلي */
+.parl-table-total-row {
+  font-weight: 700;
+  background: #e5f2ff;
+}
+
+/* ألوان المقاعد في خلايا سانت لوغو (نفس الألوان السابقة لكن أوضح قليلاً) */
+.quota-cell--our-seat {
+  background: rgba(34, 197, 94, 0.32);
+  border-color: rgba(22, 163, 74, 0.8);
+}
+
+.quota-cell--other-seat {
+  background: rgba(107, 114, 128, 0.22);
+  border-color: rgba(75, 85, 99, 0.7);
+}
+
+/* دعم الوضع الداكن لو تستخدمه في المستقبل */
+body.dark .parl-results-table-container,
+body.dark .parl-saintlague-block {
+  background: rgba(15, 23, 42, 0.92);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+}
+
+body.dark .gov-advanced-table thead th {
+  background: rgba(30, 64, 175, 0.85);
+  color: #e5e7eb;
+  border-bottom-color: rgba(148, 163, 184, 0.9);
+}
+
+body.dark .gov-advanced-table tbody tr:nth-child(odd) {
+  background: rgba(15, 23, 42, 0.9);
+}
+
+body.dark .gov-advanced-table tbody tr:nth-child(even) {
+  background: rgba(15, 23, 42, 0.7);
+}
+
+body.dark .gov-advanced-table tbody td {
+  border-bottom-color: rgba(55, 65, 81, 0.9);
+}
+
+body.dark .parl-table-total-row {
+  background: rgba(30, 64, 175, 0.55);
+}
+
+/* تصغير على الشاشات الصغيرة بدون خنق الجدول */
 @media (max-width: 768px) {
-  .gov-advanced-table th,
-  .gov-advanced-table td {
-    padding: 4px 6px;
-    font-size: 12px;
+  .gov-advanced-table thead th,
+  .gov-advanced-table tbody td {
+    padding: 0.35rem 0.45rem;
   }
 
-  /* نخلي العناوين أقصر شوي شكلياً */
   .parl-saintlague-block h3 {
-    font-size: 15px;
-  }
-
-  .parl-inline-slider {
-    margin-inline: 0;
+    font-size: 0.9rem;
   }
 }
 
 @media (max-width: 480px) {
-  .gov-advanced-table th,
-  .gov-advanced-table td {
-    font-size: 11px;
+  .gov-advanced-table thead th,
+  .gov-advanced-table tbody td {
+    font-size: 0.72rem;
   }
 }
 
-/* بس الكلمات القابلة للضغط */
+/* الروابط داخل ملاحظات المصدر فقط (تكون واضحة إنها قابلة للنقر) */
 .gov-program-note a {
-  color: #0066cc;           /* أزرق */
-  text-decoration: underline; /* خط تحت الكلمات القابلة للضغط */
+  color: #0066cc;
+  text-decoration: underline;
 }
 
 /* =========================
@@ -1490,28 +1598,35 @@ body.dark .parl-joker-subtitle {
   color: #e5e7eb;
 }
 
-/* حاوية الهلال (بس لتثبيت المسافة حوله) */
-.parl-seats-arc {
-  display: flex;
-  justify-content: center;
-}
-
-
-/* حاوية الهلال + رقم ٣٢٩ في الوسط */
+/* حاوية الهلال + رقم المقاعد في الوسط */
 .parl-seats-arc {
   position: relative;
+  display: flex;
+  justify-content: center;
+  padding-bottom: 24px; /* مساحة كافية تحت النقاط للرقم */
 }
 
-/* رقم مجموع المقاعد داخل منطقة الهلال */
+/* رقم المقاعد داخل منطقة الهلال
+   (الآن يعرض "نواب جدد | نواب تقليديون") */
 .parl-seats-total-number {
   position: absolute;
   left: 50%;
-  bottom: 12px;               /* جرّب تغيّرها 8 / 16 حسب ما يعجبك شكلها */
+  bottom: 4px;
   transform: translateX(-50%);
-  font-size: 2rem;
+  font-size: clamp(1.2rem, 1.4vw, 1.6rem);
   font-weight: 700;
-  color: #1f2933;             /* لون داكن حتى يبان فوق الخلفية البرتقالية */
+  letter-spacing: 0.03em;
+  color: #1f2933;
 }
+
+/* على الموبايل نصغّر الرقم شوي */
+@media (max-width: 700px) {
+  .parl-seats-total-number {
+    font-size: 1.1rem;
+    bottom: 2px;
+  }
+}
+
 
 /* على الموبايل نصغّر الرقم شوي */
 @media (max-width: 700px) {
