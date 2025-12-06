@@ -259,200 +259,215 @@
       </section>
 
       <!-- بوكس الجوكر لمجلس النواب (نموذج وطني) -->
-      <section class="gov-program-box parl-program-box--joker">
-        <div class="parl-joker-layout">
-          <!-- العنوان + مقدمة قصيرة -->
-          <header class="parl-joker-header">
-            <h2 class="gov-program-title">
- ماذا يحدث لو شاركت الأغلبية الصامتة في انتخابات مجلس النواب 2025؟
-            </h2>
+     <section class="gov-program-box parl-program-box--joker">
+  <div class="parl-joker-layout">
+    <!-- العنوان + مقدمة قصيرة -->
+    <header class="parl-joker-header">
+      <h2 class="gov-program-title">
+        ماذا يحدث لو شاركت الأغلبية الصامتة في انتخابات مجلس النواب 2025؟
+      </h2>
 
-            <p class="gov-program-text">
-              هذا النموذج يوضّح بالأرقام كيف تتحوّل مقاعد من الأحزاب التقليدية
-              إلى التجمّعات الوطنية عندما يقرّر جزء من المقاطعين المشاركة.
-            </p>
-          </header>
+      <p class="gov-program-text">
+        هذا النموذج يوضّح بالأرقام كيف تتحوّل مقاعد من الأحزاب التقليدية
+        إلى التجمّعات الوطنية عندما يقرّر جزء من المقاطعين المشاركة.
+      </p>
+    </header>
 
-          <!-- الجسم الرئيسي: هلال + سلايدر -->
-          <div class="parl-joker-main">
-            <!-- 1) الهلال البصري (٣٢٩ مقعد) -->
-            <div class="parl-joker-visual">
-              <h3 class="parl-joker-subtitle">
-                خريطة مقاعد مجلس النواب (٣٢٩ مقعدًا)
-              </h3>
+    <!-- الجسم الرئيسي: هلال المقاعد + التحكم -->
+    <div class="parl-joker-main">
+      <!-- 1) الهلال البصري (٣٢٩ مقعدًا) -->
+      <div class="parl-joker-visual">
+        <h3 class="parl-joker-subtitle">
+          خريطة مقاعد مجلس النواب (٣٢٩ مقعدًا)
+        </h3>
+        <p class="parl-joker-subtext">
+  النموذج يتعامل مع ٣٢٠ مقعدًا عامًا يمكن أن يتحرك بين الأحزاب
+  والتجمّعات الوطنية، بينما تبقى ٩ مقاعد كوتا للأقليات ثابتة خارج التجربة.
+</p>
 
-              <!-- حاوية الهلال -->
-              <div class="parl-seats-arc">
-                <!-- دوائر ٣٢٩ مقعد (الهلال) -->
-                <div
-                  class="gov-seats-row"
-                  aria-label="مقاعد مجلس النواب العراقي"
-                ></div>
-                <div class="parl-seats-total-number">329</div>
-              </div>
 
-              <!-- ليجند للهلال يوضّح الألوان -->
-              <div class="parl-joker-legend">
-                <span class="parl-legend-item">
-                  <span class="parl-legend-dot parl-legend-dot--green"></span>
-                  مقاعد التجمّعات الوطنية الجديدة
-                </span>
+        <!-- حاوية الهلال -->
+       <div class="parl-seats-arc">
+  <!-- دوائر ٣٢٩ مقعد (الهلال) -->
+  <div
+    class="gov-seats-row"
+    aria-label="مقاعد مجلس النواب العراقي"
+  ></div>
 
-                <span class="parl-legend-item">
-                  <span class="parl-legend-dot parl-legend-dot--blue"></span>
-                  مقعد الأغلبية (١٦٥)
-                </span>
+  <!-- هنا سيوضع: نواب جدد | نواب تقليديون -->
+  <div class="parl-seats-total-number">0 | 329</div>
+</div>
 
-                <span class="parl-legend-item">
-                  <span class="parl-legend-dot parl-legend-dot--pink"></span>
-                  مقعد الثلث المعطِّل (١١٠)
-                </span>
-              </div>
-            </div>
 
-            <!-- 2) السلايدر + الأرقام -->
-            <div class="parl-joker-controls">
-              <div class="gov-program-controls">
-                <!-- اختيار عدد التجمّعات الوطنية -->
-                <div class="gov-control-block">
-                  <label for="national-lists-count" class="gov-slider-label">
-                    عدد التجمّعات الوطنية المشاركة بالتغيير:
-                  </label>
+        <!-- شرح ألوان الهلال -->
+        <div class="parl-joker-legend">
+          <span class="parl-legend-item">
+            <span class="parl-legend-dot parl-legend-dot--green"></span>
+            مقاعد التجمّعات الوطنية الجديدة
+          </span>
 
-                  <select
-                    id="national-lists-count"
-                    class="national-lists-count"
-                  >
-                    <option value="1" selected>تجمع وطني ١</option>
-                    <option value="2">تجمعان وطنيان ٢</option>
-                    <option value="3">ثلاثة تجمّعات وطنية ٣</option>
-                    <option value="4">أربعة تجمّعات وطنية ٤</option>
-                  </select>
+          <span class="parl-legend-item">
+            <span class="parl-legend-dot parl-legend-dot--blue"></span>
+            مقعد الأغلبية (١٦٥)
+          </span>
 
-                  <p class="gov-small-note">
-                    في حالة وجود أكثر من تجمع وطني، يتم تقسيم أصوات المشاركين
-                    الجدد بينهم بالتساوي.
-                  </p>
-                </div>
-
-                <!-- السلايدر الرئيسي + الأرقام تحته -->
-                <div class="gov-control-block">
-                  <label for="parl-gov-slider" class="gov-slider-label">
-                    نسبة المقاطعين الذين يقررون المشاركة بالتغيير:
-                    <span class="slider-value">30٪</span>
-                  </label>
-
-                  <div class="gov-slider-wrapper">
-                    <input
-                      id="parl-gov-slider"
-                      type="range"
-                      class="gov-slider"
-                      min="0"
-                      max="100"
-                      step="1"
-                      value="30"
-                    />
-                  </div>
-
-                  <!-- ملاحظة تحت السلايدر (نص ثابت + نص ديناميكي من JS) -->
-                  <p class="gov-small-note">
-                    <span class="parl-static-text">
-                      حرّك المؤشر لترى كيف تنتقل المقاعد من الأحزاب التقليدية
-                      إلى التجمّعات الوطنية.
-                    </span>
-                    <br />
-                    <span class="parl-dynamic-note"></span>
-                  </p>
-
-                  <!-- ملخص الأرقام (يُحدَّث من JS) -->
-                  <div class="parl-mobile-seats-summary">
-                    <div
-                      class="parl-mobile-seats-half parl-mobile-seats-half--new"
-                    >
-                      <div class="parl-mobile-number parl-mobile-new-count">
-                        0
-                      </div>
-                      <div class="parl-mobile-label">
-                        نواب جدد من التجمّعات الوطنية
-                      </div>
-                    </div>
-
-                    <div
-                      class="parl-mobile-seats-half parl-mobile-seats-half--trad"
-                    >
-                      <div class="parl-mobile-number parl-mobile-trad-count">
-                        329
-                      </div>
-                      <div class="parl-mobile-label">
-                        نواب الأحزاب التقليدية
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- جملة تفسيرية بسيطة -->
-              <p class="gov-program-note parl-joker-explainer">
-                كل نقطة خضراء في الهلال تمثّل نائبًا جديدًا من التجمّعات
-                الوطنية. كلما ارتفعت نسبة مشاركة المقاطعين، ترى المقاعد تُنتزع
-                مقعدًا بعد آخر من الأحزاب التقليدية وتتحوّل إلى اللون الأخضر.
-              </p>
-            </div>
-          </div>
-
-          <!-- خطوات توضيحية مبسّطة -->
-          <div class="parl-joker-steps">
-            <div class="parl-step">
-              <span class="parl-step-number">١</span>
-              <p>اختر كم تجمّع وطني واقعي يمكن أن يتشكّل (١–٤).</p>
-            </div>
-            <div class="parl-step">
-              <span class="parl-step-number">٢</span>
-              <p>حرّك المؤشر لتجربة سيناريوهات مشاركة مختلفة (١٠٪، ٢٠٪، ٣٠٪…).</p>
-            </div>
-            <div class="parl-step">
-              <span class="parl-step-number">٣</span>
-              <p>
-                راقب الهلال: عندما يتجاوز عدد النقاط الخضراء ١١٠ أو ١٦٥، يتغيّر
-                شكل السلطة فعليًا.
-              </p>
-            </div>
-          </div>
-
-          <!-- ملاحظة مصدر البيانات -->
-          <p class="gov-program-note parl-data-source">
-            <em>
-              تم الحصول على جميع البيانات من
-              <a
-                href="https://ihec.iq/final-results-2025/"
-                target="_blank"
-                rel="noopener"
-              >
-                صفحة المفوضية العليا للانتخابات
-              </a>
-              و
-              <a
-                href="https://iraq.un.org/sites/default/files/2025-11/Information%20package%202025%20CoR%20elections_06112025_EN.pdf#page=5"
-                target="_blank"
-                rel="noopener"
-              >
-                الأمم المتحدة في العراق (الصفحة الخامسة من الملف)
-              </a>.
-            </em>
-          </p>
-
-          <!-- زر إظهار / إخفاء التفاصيل -->
-          <button
-            type="button"
-            class="gov-advanced-toggle parl-advanced-toggle"
-          >
-            إظهار التفاصيل
-          </button>
-
-          <!-- هنا JS يولّد جدول النتائج ويتحدّث مع السلايدر -->
-          <div class="parl-results-table-container" hidden></div>
+          <span class="parl-legend-item">
+            <span class="parl-legend-dot parl-legend-dot--pink"></span>
+            مقعد الثلث المعطِّل (١١٠)
+          </span>
         </div>
-      </section>
+      </div>
+
+      <!-- 2) السلايدر + الأرقام -->
+      <div class="parl-joker-controls">
+        <div class="gov-program-controls">
+          <!-- اختيار عدد التجمّعات الوطنية -->
+          <div class="gov-control-block">
+            <label for="national-lists-count" class="gov-slider-label">
+              عدد التجمّعات الوطنية المشاركة بالتغيير:
+            </label>
+
+            <select
+              id="national-lists-count"
+              class="national-lists-count"
+            >
+              <option value="1" selected>تجمع وطني ١</option>
+              <option value="2">تجمعان وطنيان ٢</option>
+              <option value="3">ثلاثة تجمّعات وطنية ٣</option>
+              <option value="4">أربعة تجمّعات وطنية ٤</option>
+            </select>
+
+            <p class="gov-small-note">
+              في حالة وجود أكثر من تجمع وطني، يتم تقسيم أصوات المشاركين
+              الجدد بينهم بالتساوي.
+            </p>
+          </div>
+
+          <!-- السلايدر الرئيسي + النص + الأرقام -->
+          <div class="gov-control-block">
+            <label for="parl-gov-slider" class="gov-slider-label">
+              نسبة المقاطعين الذين يقررون المشاركة بالتغيير:
+              <span class="slider-value">30٪</span>
+            </label>
+
+            <div class="gov-slider-wrapper">
+              <input
+                id="parl-gov-slider"
+                type="range"
+                class="gov-slider"
+                min="0"
+                max="100"
+                step="1"
+                value="30"
+              />
+            </div>
+
+            <!-- نص ثابت + نص ديناميكي من JS -->
+            <p class="gov-small-note">
+              <span class="parl-static-text">
+                حرّك المؤشر لترى كيف تنتقل المقاعد من الأحزاب التقليدية
+                إلى التجمّعات الوطنية.
+              </span>
+              <br />
+              <span class="parl-dynamic-note"></span>
+            </p>
+
+            <!-- ملخص الأرقام (يتحدّث من JS) -->
+            <div class="parl-mobile-seats-summary">
+              <div
+                class="parl-mobile-seats-half parl-mobile-seats-half--new"
+              >
+                <div class="parl-mobile-number parl-mobile-new-count">
+                  0
+                </div>
+                <div class="parl-mobile-label">
+                  نواب جدد من التجمّعات الوطنية
+                </div>
+              </div>
+
+            <div
+  class="parl-mobile-seats-half parl-mobile-seats-half--trad"
+>
+  <div class="parl-mobile-number parl-mobile-trad-count">
+    ٣٢٠
+  </div>
+  <div class="parl-mobile-label">
+    نواب الأحزاب التقليدية
+    <span class="parl-mobile-label-note">
+      (هذا الرقم لا يشمل ٩ مقاعد كوتا ثابتة للأقليات)
+    </span>
+  </div>
+</div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- جملة تفسيرية تحت التحكم -->
+        <p class="gov-program-note parl-joker-explainer">
+          كل نقطة خضراء في الهلال تمثّل نائبًا جديدًا من التجمّعات الوطنية.
+          كلما ارتفعت نسبة مشاركة المقاطعين، ترى المقاعد تُنتزع مقعدًا بعد
+          آخر من الأحزاب التقليدية وتتحوّل إلى اللون الأخضر.
+        </p>
+      </div>
+    </div>
+
+    <!-- خطوات استخدام النموذج -->
+    <div class="parl-joker-steps">
+      <div class="parl-step">
+        <span class="parl-step-number">١</span>
+        <p>اختر كم تجمّع وطني واقعي يمكن أن يتشكّل (١–٤).</p>
+      </div>
+
+      <div class="parl-step">
+        <span class="parl-step-number">٢</span>
+        <p>حرّك المؤشر لتجربة سيناريوهات مشاركة مختلفة (١٠٪، ٢٠٪، ٣٠٪…).</p>
+      </div>
+
+      <div class="parl-step">
+        <span class="parl-step-number">٣</span>
+        <p>
+          راقب الهلال: عندما يتجاوز عدد النقاط الخضراء ١١٠ أو ١٦٥،
+          يتغيّر شكل السلطة فعليًا.
+        </p>
+      </div>
+    </div>
+
+    <!-- مصدر البيانات -->
+    <p class="gov-program-note parl-data-source">
+      <em>
+        تم الحصول على جميع البيانات من
+        <a
+          href="https://ihec.iq/final-results-2025/"
+          target="_blank"
+          rel="noopener"
+        >
+          صفحة المفوضية العليا للانتخابات
+        </a>
+        و
+        <a
+          href="https://iraq.un.org/sites/default/files/2025-11/Information%20package%202025%20CoR%20elections_06112025_EN.pdf#page=5"
+          target="_blank"
+          rel="noopener"
+        >
+          الأمم المتحدة في العراق (الصفحة الخامسة من الملف)
+        </a>.
+      </em>
+    </p>
+
+    <!-- زر إظهار / إخفاء التفاصيل -->
+    <button
+      type="button"
+      class="gov-advanced-toggle parl-advanced-toggle"
+    >
+      إظهار التفاصيل
+    </button>
+
+    <!-- هنا JS يولّد جدول النتائج ويتحدّث مع السلايدر -->
+    <div class="parl-results-table-container" hidden></div>
+  </div>
+</section>
+
 
       <!-- تمبلت السلايدر الصغير فوق كل جدول محافظة -->
       <template id="parl-inline-slider-template">

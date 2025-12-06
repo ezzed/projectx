@@ -1659,3 +1659,15 @@ body.dark .parl-step-number {
 
 
 
+.parl-mobile-label-note {
+  display: block;
+  font-size: 0.75rem;
+  opacity: 0.8;
+  margin-top: 2px;
+}
+
+.parl-joker-subtext {
+  font-size: 0.8rem;
+  opacity: 0.85;
+  margin-top: 4px;
+}

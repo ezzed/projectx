@@ -466,6 +466,7 @@ function initParliamentProgramJoker() {
   // عناصر عرض الموبايل
   const mobileNewEl = box.querySelector(".parl-mobile-new-count");
   const mobileTradEl = box.querySelector(".parl-mobile-trad-count");
+  const seatsTotalNumberEl = box.querySelector(".parl-seats-total-number");
 
   const detailsBtn = box.querySelector(".parl-advanced-toggle");
   const resultsContainer = box.querySelector(".parl-results-table-container");
@@ -682,6 +683,13 @@ function initParliamentProgramJoker() {
     if (mobileTradEl) {
       mobileTradEl.textContent = totalTraditionalSeats.toLocaleString("en-US");
     }
+        // نفس الأرقام داخل الهلال بصيغة: نواب جدد | نواب تقليديون
+    if (seatsTotalNumberEl) {
+      const newSeats = totalNationalAllLists.toLocaleString("en-US");
+      const tradSeats = totalTraditionalSeats.toLocaleString("en-US");
+      seatsTotalNumberEl.textContent = `${newSeats} | ${tradSeats}`;
+    }
+
 
     // نخزن الملخص حتى نعيد رسم الجدول عند الحاجة
     lastSummary = {
