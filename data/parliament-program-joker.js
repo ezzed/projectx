@@ -13,24 +13,29 @@ const PARLIAMENT_THIRD = 110;
  * يُستخدم هذا التخطيط في كل الشاشات، ويتكيّف تلقائيًا مع تغيير الحجم.
  */
 // يرسم مقاعد البرلمان على شكل عدة صفوف (هلال من كرات صغيرة)
+// يرسم مقاعد البرلمان على شكل عدة صفوف (هلال من كرات صغيرة)
+// مع تكبير محيط أول دائرة وترك آخر دائرة كما هي
 function layoutParliamentArc(seatsRow, circles) {
   if (!seatsRow || !Array.isArray(circles) || circles.length === 0) return;
 
   const width = seatsRow.clientWidth || 320;
 
-  // نصف قطر الصف الخارجي (الأكبر)
+  // نصف قطر الصف الخارجي (يبقى ثابت)
   const outerRadius = width / 2 - 4;
 
-  // نستخدم 7 صفوف مع توزيع مقاعد ثابت:
-  // المجموع = 41 + 43 + 45 + 47 + 49 + 51 + 53 = 329
+  // 7 صفوف = 329 مقعد (41 + 43 + 45 + 47 + 49 + 51 + 53)
   const rows = 7;
-  const seatsPerRow = [41, 43, 45, 47, 49, 51, 53];
+  const seatsPerRow = [31, 43, 46, 48, 49, 54, 58];
 
-  // المسافة بين كل صف وصف (كلما كبرت صارت الدائرة أسمك)
-  const rowGap = outerRadius / (rows + 1);
+  // 🔸 هنا السحر:
+  // نخلي أول سرة ما تبدي من الصفر، وإنما من 55% من نصف قطر الدائرة
+  // جرّب تغيّر 0.55 إلى 0.5 أو 0.6 حسب اللي يعجبك أكثر
+  const minRadius = outerRadius * 0.55;   // نصف قطر أول سرة (الأقرب للداخل)
+  const bandThickness = outerRadius - minRadius;      // سماكة منطقة الهلال
+  const rowGap = rows > 1 ? bandThickness / (rows - 1) : 0;
 
   const centerX = width / 2;
-  const centerY = outerRadius + 12; // نرفع الهلال شوي عن الحافة السفلية
+  const centerY = outerRadius + 12; // ارتفاع مركز الدائرة عن الأسفل
 
   const height = centerY + 4;
   seatsRow.style.position = "relative";
@@ -38,20 +43,19 @@ function layoutParliamentArc(seatsRow, circles) {
 
   let globalIndex = 0;
 
-  // نرسم من الصف الداخلي إلى الخارجي حتى الشكل يطلع مرتب
+  // نرسم من السرة الأولى (الداخلية) إلى الأخيرة (الخارجية)
   for (let r = 0; r < rows; r += 1) {
     const seatsInRow = seatsPerRow[r];
-    const radius = outerRadius - (rows - 1 - r) * rowGap;
+    const radius = minRadius + r * rowGap; // أول صف = minRadius, آخر صف = outerRadius
 
-    // قوس من 180° (يسار) إلى 0° (يمين)
-    const startAngle = Math.PI;
-    const endAngle = 0;
+    const startAngle = Math.PI; // 180°
+    const endAngle = 0;         //   0°
     const step =
       seatsInRow > 1 ? (endAngle - startAngle) / (seatsInRow - 1) : 0;
 
     for (let i = 0; i < seatsInRow; i += 1) {
       const circle = circles[globalIndex];
-      if (!circle) return; // حماية لو صار خطأ بالعد
+      if (!circle) return; // حماية لو صار اختلاف بعدد الكرات
 
       const angle = startAngle + step * i;
 
@@ -67,6 +71,7 @@ function layoutParliamentArc(seatsRow, circles) {
     }
   }
 }
+
 
 
 /* ======================= سانت لوغو المعدّل ======================= */

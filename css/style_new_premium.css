@@ -1496,6 +1496,31 @@ body.dark .parl-joker-subtitle {
   justify-content: center;
 }
 
+
+/* حاوية الهلال + رقم ٣٢٩ في الوسط */
+.parl-seats-arc {
+  position: relative;
+}
+
+/* رقم مجموع المقاعد داخل منطقة الهلال */
+.parl-seats-total-number {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;               /* جرّب تغيّرها 8 / 16 حسب ما يعجبك شكلها */
+  transform: translateX(-50%);
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1f2933;             /* لون داكن حتى يبان فوق الخلفية البرتقالية */
+}
+
+/* على الموبايل نصغّر الرقم شوي */
+@media (max-width: 700px) {
+  .parl-seats-total-number {
+    font-size: 1.7rem;
+    bottom: 10px;
+  }
+}
+
 /* ليجند أسفل الهلال */
 .parl-joker-legend {
   margin-top: 8px;
