@@ -1609,38 +1609,66 @@ body.dark .parl-joker-subtitle {
   position: relative;
   display: flex;
   justify-content: center;
-  padding-bottom: 24px; /* مساحة كافية تحت النقاط للرقم */
+  padding-bottom: 28px; /* مساحة كافية لثلاث أسطر نص */
 }
 
-/* رقم المقاعد داخل منطقة الهلال
-   (الآن يعرض "نواب جدد | نواب تقليديون") */
+/* البوكس اللي جوّا الهلال (نِسَب + أرقام + سطر الكوتا) */
 .parl-seats-total-number {
   position: absolute;
   left: 50%;
-  bottom: 4px;
+  bottom: 10px;
   transform: translateX(-50%);
-  font-size: clamp(1.2rem, 1.4vw, 1.6rem);
+  text-align: center;
+  line-height: 1.3;
   font-weight: 700;
-  letter-spacing: 0.03em;
   color: #1f2933;
+  font-size: clamp(1rem, 1.1vw, 1.25rem);
 }
 
-/* على الموبايل نصغّر الرقم شوي */
+/* في الوضع الليلي نخلي النص فاتح */
+body.dark .parl-seats-total-number {
+  color: #f9fafb;
+}
+
+/* سطر النسب (فوق) –  مثلاً: 40٪ | 60٪ */
+.parl-seats-percent-row {
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+/* سطر الأرقام (وسط) – مثلاً: 180 | 140 */
+.parl-seats-count-row {
+  font-size: 1rem;
+  margin-top: 2px;
+}
+
+/* سطر الكوتا (تحت) – +9 مقاعد كوتا أقليات */
+.parl-seats-quota-note {
+  font-size: 0.8rem;
+  margin-top: 3px;
+  opacity: 0.9;
+}
+
+/* موبايل – نصغّر شوي حتى الـ3 أسطر تبقى جوّا الهلال */
 @media (max-width: 700px) {
   .parl-seats-total-number {
-    font-size: 1.1rem;
-    bottom: 2px;
+    font-size: 0.9rem;
+    bottom: 8px;
+  }
+
+  .parl-seats-percent-row {
+    font-size: 0.8rem;
+  }
+
+  .parl-seats-count-row {
+    font-size: 0.95rem;
+  }
+
+  .parl-seats-quota-note {
+    font-size: 0.75rem;
   }
 }
 
-
-/* على الموبايل نصغّر الرقم شوي */
-@media (max-width: 700px) {
-  .parl-seats-total-number {
-    font-size: 1.7rem;
-    bottom: 10px;
-  }
-}
 
 /* ليجند أسفل الهلال */
 .parl-joker-legend {
@@ -1792,3 +1820,4 @@ body.dark .parl-step-number {
   opacity: 0.85;
   margin-top: 4px;
 }
+

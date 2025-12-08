@@ -684,19 +684,36 @@ function initParliamentProgramJoker() {
       }
     }
 
-    /* -------- أرقام الموبايل (نواب جدد / تقليديين) -------- */
+      /* -------- أرقام الموبايل (نواب جدد / تقليديين) -------- */
+     /* -------- أرقام الموبايل (نواب جدد / تقليديين) -------- */
     if (mobileNewEl) {
       mobileNewEl.textContent = totalNationalAllLists.toLocaleString("en-US");
     }
     if (mobileTradEl) {
       mobileTradEl.textContent = totalTraditionalSeats.toLocaleString("en-US");
     }
-        // نفس الأرقام داخل الهلال بصيغة: نواب جدد | نواب تقليديون
+
+    // نفس الأرقام داخل الهلال + نص نسبة السلايدر + سطر الكوتا
     if (seatsTotalNumberEl) {
       const newSeats = totalNationalAllLists.toLocaleString("en-US");
       const tradSeats = totalTraditionalSeats.toLocaleString("en-US");
-      seatsTotalNumberEl.textContent = `${newSeats} | ${tradSeats}`;
+
+      const sliderText = `  ${sliderVal}٪`;
+
+      seatsTotalNumberEl.innerHTML = `
+        <div class="parl-seats-percent-row">
+          ${sliderText}
+        </div>
+        <div class="parl-seats-count-row">
+          ${newSeats} | ${tradSeats}
+        </div>
+        <div class="parl-seats-quota-note">
+          +9 مقاعد كوتا أقليات
+        </div>
+      `;
     }
+
+
 
 
     // نخزن الملخص حتى نعيد رسم الجدول عند الحاجة
