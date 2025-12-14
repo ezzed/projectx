@@ -1607,10 +1607,19 @@ body.dark .parl-joker-subtitle {
 /* حاوية الهلال + رقم المقاعد في الوسط */
 .parl-seats-arc {
   position: relative;
-  display: flex;
-  justify-content: center;
-  padding-bottom: 28px; /* مساحة كافية لثلاث أسطر نص */
+  width: 100%;
+  /* إذا عندك ارتفاع ثابت للكارت خليه، أو استعمل aspect-ratio */
+  aspect-ratio: 16 / 9; /* غيّرها إذا تحب */
+  overflow: hidden;
+  border-radius: 14px;
 }
+
+#parliamentSvgObj {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
 
 /* البوكس اللي جوّا الهلال (نِسَب + أرقام + سطر الكوتا) */
 .parl-seats-total-number {
@@ -1821,3 +1830,9 @@ body.dark .parl-step-number {
   margin-top: 4px;
 }
 
+/* إذا الكلاسات موجودة سابقاً على div، خلّيها تشتغل على svg circle أيضاً */
+.seat-circle--green { fill: #22c55e !important; }
+.seat-circle--target { stroke: #60a5fa !important; stroke-width: 1.5; }
+.seat-circle--rest { opacity: 0.35; }
+
+/* ملاحظة: fill/stroke يعتمد على تصميم الـ SVG. إذا ما تغيّر، نعدّلها حسب الـ SVG */

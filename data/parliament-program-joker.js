@@ -1,95 +1,134 @@
-// ../data/parliament-program-joker.js
-// نموذج وطني لمجلس النواب (٣٢٩ مقعداً)
+// Parliament Joker (SVG) — FULL rewrite with DETAILS exactly like the reference file
+// - Details button: lazy render (open => render tables), close => hide
+// - Slider input => fast update only (no heavy tables)
+// - Slider change => heavy tables only if details panel open
+// - National results table + Saint-Laguë per governorate (same UI behavior as reference)
 
 import { parliamentGovernoratesData } from "./parliamentData.js";
 
-const TOTAL_PARLIAMENT_SEATS = 329;
+/* ===============================
+   Constants
+================================ */
+const PARLIAMENT_TOTAL_SEATS = 329;
+const PARLIAMENT_QUOTA_SEATS = 9;
 const PARLIAMENT_MAJORITY = 165;
 const PARLIAMENT_THIRD = 110;
 
-/* ======================= رسم هلال مقاعد البرلمان ======================= */
-/**
- * يرتّب دوائر المقاعد على شكل نصف دائرة (هلال) يعتمد على عرض الحاوية.
- * يُستخدم هذا التخطيط في كل الشاشات، ويتكيّف تلقائيًا مع تغيير الحجم.
- */
-// يرسم مقاعد البرلمان على شكل عدة صفوف (هلال من كرات صغيرة)
-// يرسم مقاعد البرلمان على شكل عدة صفوف (هلال من كرات صغيرة)
-// مع تكبير محيط أول دائرة وترك آخر دائرة كما هي
-function layoutParliamentArc(seatsRow, circles) {
-  if (!seatsRow || !Array.isArray(circles) || circles.length === 0) return;
+/* ===============================
+   Visual config
+================================ */
+const CFG = {
+  dimOpacity: 0.12,
+  onOpacity: 1.0,
 
-  const width = seatsRow.clientWidth || 320;
+  govRingWidth: 0.6,
+  govRingOpacity: 0.9,
 
-  // نصف قطر الصف الخارجي (يبقى ثابت)
-  const outerRadius = width / 2 - 4;
+  // NEW seats appearance
+  takenFill: "#00E5FF",
+  takenGlow: "drop-shadow(0 0 10px rgba(0,229,255,0.55))",
 
-  // 7 صفوف = 329 مقعد (41 + 43 + 45 + 47 + 49 + 51 + 53)
-  const rows = 7;
- const seatsPerRow = [28, 41, 44, 47, 48, 54, 58]; // هم المجموع = 320
- // المجموع = 320
+  baselineStrokeWidth: 0.6,
 
+  // Fallback to take seats from same party other governorates (excluding __extra__)
+  enableFallbackWithinSameParty: true,
 
-  // 🔸 هنا السحر:
-  // نخلي أول سرة ما تبدي من الصفر، وإنما من 55% من نصف قطر الدائرة
-  // جرّب تغيّر 0.55 إلى 0.5 أو 0.6 حسب اللي يعجبك أكثر
-  const minRadius = outerRadius * 0.55;   // نصف قطر أول سرة (الأقرب للداخل)
-  const bandThickness = outerRadius - minRadius;      // سماكة منطقة الهلال
-  const rowGap = rows > 1 ? bandThickness / (rows - 1) : 0;
+  // Logging
+  logEveryInput: false,
+};
 
-  const centerX = width / 2;
-  const centerY = outerRadius + 12; // ارتفاع مركز الدائرة عن الأسفل
-
-  const height = centerY + 4;
-  seatsRow.style.position = "relative";
-  seatsRow.style.height = `${height}px`;
-
-  let globalIndex = 0;
-
-  // نرسم من السرة الأولى (الداخلية) إلى الأخيرة (الخارجية)
-  for (let r = 0; r < rows; r += 1) {
-    const seatsInRow = seatsPerRow[r];
-    const radius = minRadius + r * rowGap; // أول صف = minRadius, آخر صف = outerRadius
-
-    const startAngle = Math.PI; // 180°
-    const endAngle = 0;         //   0°
-    const step =
-      seatsInRow > 1 ? (endAngle - startAngle) / (seatsInRow - 1) : 0;
-
-    for (let i = 0; i < seatsInRow; i += 1) {
-      const circle = circles[globalIndex];
-      if (!circle) return; // حماية لو صار اختلاف بعدد الكرات
-
-      const angle = startAngle + step * i;
-
-      const x = centerX + radius * Math.cos(angle);
-      const y = centerY - radius * Math.sin(angle);
-
-      circle.style.position = "absolute";
-      circle.style.left = `${x}px`;
-      circle.style.top = `${y}px`;
-      circle.style.transform = "translate(-50%, -50%)";
-
-      globalIndex += 1;
-    }
-  }
+/* ===============================
+   Helpers
+================================ */
+function safeNum(x, fallback = 0) {
+  const n = Number(x);
+  return Number.isFinite(n) ? n : fallback;
 }
 
+function toEn(n) {
+  return Number(n || 0).toLocaleString("en-US");
+}
 
+function canonicalPartyId(p) {
+  return String(p?.svgId || p?.svgTitle || p?.name || p?.id || "").trim();
+}
 
-/* ======================= سانت لوغو المعدّل ======================= */
+function hashColor(str) {
+  const s = String(str || "");
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  const hue = (h >>> 0) % 360;
+  return `hsl(${hue} 85% 55%)`;
+}
 
-// بناء مقسّمات سانت لوغو المعدّل
+function parseCssColorToRgb(input) {
+  const s = String(input || "").trim();
+  if (!s) return null;
+
+  if (s[0] === "#") {
+    let hex = s.slice(1);
+    if (hex.length === 3) hex = hex.split("").map((ch) => ch + ch).join("");
+    if (hex.length !== 6) return null;
+    return {
+      r: parseInt(hex.slice(0, 2), 16),
+      g: parseInt(hex.slice(2, 4), 16),
+      b: parseInt(hex.slice(4, 6), 16),
+    };
+  }
+
+  const m = s.match(
+    /^rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)(?:\s*,\s*[\d.]+)?\s*\)$/i
+  );
+  if (m) return { r: +m[1], g: +m[2], b: +m[3] };
+  return null;
+}
+
+function getPartyBaseFill(node) {
+  const styleAttr = node.getAttribute("style") || "";
+  const m = styleAttr.match(/fill\s*:\s*([^;]+)/i);
+  if (m && parseCssColorToRgb(m[1].trim())) return m[1].trim();
+
+  const fillAttr = node.getAttribute("fill");
+  if (fillAttr) return fillAttr;
+
+  const c = node.querySelector("circle");
+  if (c) {
+    const cStyle = c.getAttribute("style") || "";
+    const cm = cStyle.match(/fill\s*:\s*([^;]+)/i);
+    if (cm) return cm[1].trim();
+    const cFill = c.getAttribute("fill");
+    if (cFill) return cFill;
+  }
+
+  return "#bdbdbd";
+}
+
+function findPartyNode(svgDoc, partyKey) {
+  const byId = partyKey ? svgDoc.getElementById(partyKey) : null;
+  if (byId) return byId;
+
+  const wanted = String(partyKey || "").trim();
+  if (!wanted) return null;
+
+  const titles = svgDoc.querySelectorAll("g > title");
+  const hit = Array.from(titles).find((t) => (t.textContent || "").trim() === wanted);
+  return hit?.parentElement || null;
+}
+
+/* ===============================
+   Saint-Laguë (reference-like)
+================================ */
 function buildSaintLagueDivisors(totalSeats) {
   if (!Number.isFinite(totalSeats) || totalSeats <= 0) return [];
   const divisors = [1.7];
-  for (let i = 1; i < totalSeats; i += 1) {
-    divisors.push(1 + 2 * i); // 3, 5, 7, ...
-  }
+  for (let i = 1; i < totalSeats; i += 1) divisors.push(1 + 2 * i); // 3,5,7...
   return divisors;
 }
 
-// توزيع المقاعد على القوائم داخل محافظة معيّنة
-// parties: [{ id, name, votes, isNational, isQuota }]
+// parties: [{ id, name, votes, isNational }]
 function allocateSeatsSaintLague(parties, totalSeats) {
   const divisors = buildSaintLagueDivisors(totalSeats);
 
@@ -117,16 +156,12 @@ function allocateSeatsSaintLague(parties, totalSeats) {
     });
   });
 
-  // ترتيب تنازلي للحواصل
   quotaList.sort((a, b) => b.quotient - a.quotient);
 
   const winnersByParty = new Map();
   const seatCounts = new Map();
 
-  const seatsToAllocate = Math.min(
-    Math.max(totalSeats || 0, 0),
-    quotaList.length
-  );
+  const seatsToAllocate = Math.min(Math.max(totalSeats || 0, 0), quotaList.length);
 
   let maxDivisorIndexUsed = -1;
 
@@ -135,54 +170,28 @@ function allocateSeatsSaintLague(parties, totalSeats) {
 
     seatCounts.set(partyId, (seatCounts.get(partyId) || 0) + 1);
 
-    if (!winnersByParty.has(partyId)) {
-      winnersByParty.set(partyId, new Set());
-    }
+    if (!winnersByParty.has(partyId)) winnersByParty.set(partyId, new Set());
     winnersByParty.get(partyId).add(divisorIndex);
 
-    if (divisorIndex > maxDivisorIndexUsed) {
-      maxDivisorIndexUsed = divisorIndex;
-    }
+    if (divisorIndex > maxDivisorIndexUsed) maxDivisorIndexUsed = divisorIndex;
   }
 
   return { divisors, winnersByParty, seatCounts, maxDivisorIndexUsed };
 }
 
-/* ======================= جدول سانت لوغو لكل محافظة ======================= */
-
-/**
- * رسم بلوك المحافظة:
- *  - عنوان صغير
- *  - سلايدر "مراية" يعكس السلايدر الرئيسي
- *  - جدول سانت لوغو للأحزاب / التجمعات
- */
-function renderSaintLagueDetailTable(
-  advancedData,
-  container,
-  govName,
-  mainSlider,
-  sliderValue
-) {
+/* ===============================
+   Tables (same behavior/UI style as reference)
+================================ */
+function renderSaintLagueDetailTable(advancedData, container, govName, mainSlider) {
   if (!advancedData || !container) return;
 
   const { parties, allocation } = advancedData;
-  const {
-    divisors,
-    winnersByParty,
-    seatCounts,
-    maxDivisorIndexUsed,
-  } = allocation || {};
+  const { divisors, winnersByParty, seatCounts, maxDivisorIndexUsed } = allocation || {};
 
-  if (
-    !Array.isArray(parties) ||
-    !parties.length ||
-    !Array.isArray(divisors) ||
-    !divisors.length
-  ) {
+  if (!Array.isArray(parties) || !parties.length || !Array.isArray(divisors) || !divisors.length) {
     return;
   }
 
-  // نختصر الأعمدة إلى آخر مقسّم تم استخدامه فعلياً في توزيع المقاعد
   const effectiveDivisors =
     Number.isInteger(maxDivisorIndexUsed) && maxDivisorIndexUsed >= 0
       ? divisors.slice(0, maxDivisorIndexUsed + 1)
@@ -196,36 +205,27 @@ function renderSaintLagueDetailTable(
   title.textContent = `تفاصيل سانت لوغو – ${govName}`;
   wrapper.appendChild(title);
 
-  /* 🔹 استدعاء السلايدر من الـ <template> 🔹 */
+  // Inline slider template (optional)
   const tmpl = document.getElementById("parl-inline-slider-template");
-  if (tmpl) {
+  if (tmpl && mainSlider) {
     const clone = tmpl.content.cloneNode(true);
-
     const valueSpan = clone.querySelector(".parl-inline-slider-value");
     const inlineSlider = clone.querySelector(".parl-inline-slider-input");
 
-    if (inlineSlider && mainSlider) {
-      // نفس إعدادات السلايدر الرئيسي
+    if (inlineSlider) {
       inlineSlider.min = mainSlider.min;
       inlineSlider.max = mainSlider.max;
       inlineSlider.step = mainSlider.step;
 
-      // دالة تزامن من السلايدر الرئيسي -> سلايدر الجدول
       const syncFromMain = () => {
         inlineSlider.value = mainSlider.value;
-        if (valueSpan) {
-          valueSpan.textContent = `${mainSlider.value}٪`;
-        }
+        if (valueSpan) valueSpan.textContent = `${mainSlider.value}٪`;
       };
 
-      // أول مزامنة
       syncFromMain();
-
-      // لما يتحرك السلايدر الرئيسي، حدِّث اللي فوق الجدول
       mainSlider.addEventListener("input", syncFromMain);
       mainSlider.addEventListener("change", syncFromMain);
 
-      // لما يتحرك السلايدر فوق الجدول، عدّل الرئيسي وخلِّيه يشغّل نفس الأحداث
       inlineSlider.addEventListener("input", (e) => {
         mainSlider.value = e.target.value;
         mainSlider.dispatchEvent(new Event("input"));
@@ -240,7 +240,6 @@ function renderSaintLagueDetailTable(
     wrapper.appendChild(clone);
   }
 
-  // جدول سانت لوغو
   const table = document.createElement("table");
   table.className = "gov-advanced-table";
 
@@ -298,9 +297,7 @@ function renderSaintLagueDetailTable(
 
       const wonSeatHere = winnersSet.has(divisorIndex);
       if (wonSeatHere) {
-        td.classList.add(
-          party.isOurList ? "quota-cell--our-seat" : "quota-cell--other-seat"
-        );
+        td.classList.add(party.isOurList ? "quota-cell--our-seat" : "quota-cell--other-seat");
       }
 
       row.appendChild(td);
@@ -314,41 +311,31 @@ function renderSaintLagueDetailTable(
   container.appendChild(wrapper);
 }
 
-/* ======================= جدول وطني (كل المحافظات) ======================= */
-
-// summary = { listsCount, sliderValue, rows: [...], totals: {...}, govAdvancedList: [...] }
+// summary = { listsCount, sliderValue, rows, totals, govAdvancedList }
 function renderParliamentResultsTable(summary, container, mainSlider) {
   if (!summary || !container) return;
 
   const { listsCount, sliderValue, rows, totals, govAdvancedList } = summary;
   container.innerHTML = "";
 
-  // 🔹 كرت خاص للجدول الوطني (نفس ستايل جداول المحافظات)
   const nationalWrapper = document.createElement("div");
   nationalWrapper.className = "parl-saintlague-block parl-saintlague-block--national";
 
-  // نص توضيحي أعلى الجدول الوطني داخل الكرت
   const title = document.createElement("p");
   title.className = "gov-small-note";
   title.textContent =
-    `توزيع مقاعد مجلس النواب حسب المحافظات عند مشاركة ` +
-    `${sliderValue}% من المقاطعين، وبوجود ${listsCount} تجمّع/تجمّعات وطنية.`;
+    `توزيع مقاعد مجلس النواب حسب المحافظات عند مشاركة ${sliderValue}% من المقاطعين، ` +
+    `وبوجود ${listsCount} تجمّع/تجمّعات وطنية.`;
   nationalWrapper.appendChild(title);
 
-  // جدول وطني لكل المحافظات
   const table = document.createElement("table");
   table.className = "gov-advanced-table parl-advanced-table";
-
 
   const thead = document.createElement("thead");
   const headRow = document.createElement("tr");
 
   const headers = ["المحافظة", "المقاعد العامة", "مقاعد الكوتا"];
-
-  for (let i = 1; i <= listsCount; i += 1) {
-    headers.push(`تجمع وطني ${i}`);
-  }
-
+  for (let i = 1; i <= listsCount; i += 1) headers.push(`تجمع وطني ${i}`);
   headers.push("مقاعد الأحزاب التقليدية");
   headers.push("مجموع المقاعد");
 
@@ -367,10 +354,9 @@ function renderParliamentResultsTable(summary, container, mainSlider) {
     const tr = document.createElement("tr");
 
     const basicCols = [row.nameAr, row.generalSeats, row.quotaSeats];
-
-    basicCols.forEach((val) => {
+    basicCols.forEach((val, idx) => {
       const td = document.createElement("td");
-      td.textContent = val.toLocaleString("en-US");
+      td.textContent = idx === 0 ? String(val) : Number(val).toLocaleString("en-US");
       tr.appendChild(td);
     });
 
@@ -378,9 +364,7 @@ function renderParliamentResultsTable(summary, container, mainSlider) {
       const td = document.createElement("td");
       const seats = row.nationalSeats[i] || 0;
       td.textContent = seats.toLocaleString("en-US");
-      if (seats > 0) {
-        td.classList.add("quota-cell--our-seat");
-      }
+      if (seats > 0) td.classList.add("quota-cell--our-seat");
       tr.appendChild(td);
     }
 
@@ -395,7 +379,6 @@ function renderParliamentResultsTable(summary, container, mainSlider) {
     tbody.appendChild(tr);
   });
 
-  // صف المجموع الكلي
   const totalTr = document.createElement("tr");
   totalTr.classList.add("parl-table-total-row");
 
@@ -427,15 +410,13 @@ function renderParliamentResultsTable(summary, container, mainSlider) {
   tdAll.textContent = totals.totalSeats.toLocaleString("en-US");
   totalTr.appendChild(tdAll);
 
-   tbody.appendChild(totalTr);
+  tbody.appendChild(totalTr);
   table.appendChild(tbody);
 
-  // نحط الجدول داخل الكرت الوطني، ثم الكرت داخل الحاوية الكبيرة
   nationalWrapper.appendChild(table);
   container.appendChild(nationalWrapper);
 
-  // ========== جداول سانت لوغو لكل محافظة تحت الجدول الوطني ==========
-
+  // Per-gov Saint-Laguë blocks
   if (Array.isArray(govAdvancedList) && govAdvancedList.length > 0) {
     const sep = document.createElement("hr");
     sep.className = "parl-advanced-separator";
@@ -448,19 +429,375 @@ function renderParliamentResultsTable(summary, container, mainSlider) {
     container.appendChild(subTitle);
 
     govAdvancedList.forEach((item) => {
-      renderSaintLagueDetailTable(
-        item.advancedData,
-        container,
-        item.nameAr,
-        mainSlider,
-        summary.sliderValue
-      );
+      renderSaintLagueDetailTable(item.advancedData, container, item.nameAr, mainSlider);
     });
   }
 }
 
-/* ======================= بوكس البرلمان (٣٢٩ مقعد) ======================= */
+/* ===============================
+   Baseline from DATA
+================================ */
+function buildBaselineFromData() {
+  const baselineSeats = new Map(); // govId -> Map(partyId -> seats)
+  const partyMeta = new Map(); // partyId -> { name }
+  const govMeta = new Map(); // govId -> { label }
 
+  for (const gov of parliamentGovernoratesData) {
+    const govId = gov.id;
+    const govLabel = gov.nameAr || gov.nameEn || govId;
+    govMeta.set(govId, { label: govLabel });
+
+    const gm = new Map();
+    for (const p of gov.parties || []) {
+      if (p.isQuota) continue;
+      const pid = canonicalPartyId(p);
+      if (!pid) continue;
+
+      const seats = safeNum(p.seats, 0);
+      if (seats > 0) gm.set(pid, seats);
+
+      if (!partyMeta.has(pid)) partyMeta.set(pid, { name: p.name || pid });
+    }
+    baselineSeats.set(govId, gm);
+  }
+
+  return { baselineSeats, partyMeta, govMeta };
+}
+
+/* ===============================
+   SVG Registry + binding
+================================ */
+function bindSvgAndBuildRegistry(svgDoc, partyMeta, govMeta) {
+  const partyBlocks = new Map(); // partyId -> { blocks:[{govId,govLabel,seats}], totalSeats }
+
+  for (const gov of parliamentGovernoratesData) {
+    const govId = gov.id;
+    const govLabel = govMeta.get(govId)?.label || gov.nameAr || gov.nameEn || govId;
+
+    for (const p of gov.parties || []) {
+      if (p.isQuota) continue;
+      const pid = canonicalPartyId(p);
+      if (!pid) continue;
+
+      const seats = safeNum(p.seats, 0);
+      if (seats <= 0) continue;
+
+      if (!partyBlocks.has(pid)) partyBlocks.set(pid, { blocks: [], totalSeats: 0 });
+      const entry = partyBlocks.get(pid);
+      entry.blocks.push({ govId, govLabel, seats });
+      entry.totalSeats += seats;
+
+      if (!partyMeta.has(pid)) partyMeta.set(pid, { name: p.name || pid });
+    }
+  }
+
+  const registry = {
+    partyGovSeats: new Map(), // partyId -> Map(govId -> circle[])
+    allSeats: [],
+    missingGroups: [],
+    shortage: [],
+    ok: false,
+    _integrity: null,
+  };
+
+  function pushSeat(partyId, govId, seatEl) {
+    if (!registry.partyGovSeats.has(partyId)) registry.partyGovSeats.set(partyId, new Map());
+    const govMap = registry.partyGovSeats.get(partyId);
+    if (!govMap.has(govId)) govMap.set(govId, []);
+    govMap.get(govId).push(seatEl);
+    registry.allSeats.push(seatEl);
+  }
+
+  let boundPartyGroups = 0;
+
+  for (const [partyId, info] of partyBlocks.entries()) {
+    const node = findPartyNode(svgDoc, partyId);
+
+    if (!node) {
+      registry.missingGroups.push({
+        partyId,
+        partyName: partyMeta.get(partyId)?.name || partyId,
+        expectedSeats: info.totalSeats,
+      });
+      continue;
+    }
+
+    const circles = Array.from(node.querySelectorAll("circle.seat, circle"));
+    if (!circles.length) {
+      registry.missingGroups.push({
+        partyId,
+        partyName: partyMeta.get(partyId)?.name || partyId,
+        expectedSeats: info.totalSeats,
+      });
+      continue;
+    }
+
+    const baseFill = getPartyBaseFill(node);
+
+    // reset circles
+    for (const c of circles) {
+      c.dataset.partyId = partyId;
+      c.dataset.party = partyMeta.get(partyId)?.name || partyId;
+      c.dataset.role = "traditional";
+      c.dataset.taken = "0";
+      c.dataset.govId = "";
+      c.dataset.gov = "";
+      c.dataset.baseFill = baseFill;
+
+      c.style.fill = baseFill;
+      c.style.opacity = String(CFG.dimOpacity);
+      c.style.stroke = "none";
+      c.style.strokeWidth = "0";
+      c.style.filter = "none";
+    }
+
+    // Fair allocation across gov blocks
+    const blocks = info.blocks.slice().sort((a, b) => b.seats - a.seats);
+    const allocations = blocks.map((b) => ({ ...b, allocated: 0 }));
+
+    let remaining = circles.length;
+
+    for (const a of allocations) {
+      if (remaining <= 0) break;
+      if (a.seats > 0) {
+        a.allocated = 1;
+        remaining -= 1;
+      }
+    }
+
+    while (remaining > 0) {
+      let best = null;
+      let bestNeed = -1;
+      for (const a of allocations) {
+        const need = a.seats - a.allocated;
+        if (need > bestNeed) {
+          bestNeed = need;
+          best = a;
+        }
+      }
+      if (!best || bestNeed <= 0) break;
+      best.allocated += 1;
+      remaining -= 1;
+    }
+
+    let cursor = 0;
+    for (const a of allocations) {
+      const want = a.seats;
+      const give = a.allocated;
+
+      if (give < want) {
+        registry.shortage.push({
+          partyId,
+          partyName: partyMeta.get(partyId)?.name || partyId,
+          govId: a.govId,
+          govLabel: a.govLabel,
+          expectedSeats: want,
+          actualCircles: give,
+        });
+      }
+
+      const govStroke = hashColor(a.govId);
+      for (let i = 0; i < give; i++) {
+        const c = circles[cursor++];
+        if (!c) break;
+
+        c.dataset.govId = a.govId;
+        c.dataset.gov = a.govLabel;
+
+        c.style.opacity = String(CFG.onOpacity);
+        c.style.stroke = govStroke;
+        c.style.strokeWidth = String(CFG.govRingWidth);
+        c.style.strokeOpacity = String(CFG.govRingOpacity);
+
+        pushSeat(partyId, a.govId, c);
+      }
+    }
+
+    for (let i = cursor; i < circles.length; i++) {
+      const c = circles[i];
+      c.dataset.govId = "__extra__";
+      c.dataset.gov = "EXTRA / Unallocated";
+      c.style.opacity = String(CFG.dimOpacity);
+      c.style.stroke = "rgba(255,255,255,0.35)";
+      c.style.strokeWidth = "0.6";
+      c.style.strokeOpacity = "0.6";
+      pushSeat(partyId, "__extra__", c);
+    }
+
+    boundPartyGroups++;
+  }
+
+  const allSvgCircles = svgDoc.querySelectorAll("circle.seat, circle").length;
+
+  registry.ok = registry.allSeats.length > 0;
+  registry._integrity = {
+    svgTotalCircles: allSvgCircles,
+    boundCircles: registry.allSeats.length,
+    unboundCircles: Math.max(0, allSvgCircles - registry.allSeats.length),
+    boundPartyGroups,
+  };
+
+  return registry;
+}
+
+/* ===============================
+   Paint helpers
+================================ */
+function resetAllSeatsToBaseline(registry) {
+  for (const seat of registry.allSeats) {
+    seat.dataset.taken = "0";
+    seat.dataset.role = "traditional";
+
+    seat.style.filter = "none";
+    seat.style.fill = seat.dataset.baseFill || "#bdbdbd";
+
+    const gid = seat.dataset.govId || "";
+
+    if (gid === "__extra__") {
+      seat.style.opacity = String(CFG.dimOpacity);
+      seat.style.stroke = "rgba(255,255,255,0.35)";
+      seat.style.strokeWidth = "0.6";
+      seat.style.strokeOpacity = "0.6";
+      continue;
+    }
+
+    if (gid) {
+      seat.style.opacity = String(CFG.onOpacity);
+      seat.style.stroke = hashColor(gid);
+      seat.style.strokeWidth = String(CFG.baselineStrokeWidth);
+      seat.style.strokeOpacity = String(CFG.govRingOpacity);
+    } else {
+      seat.style.opacity = String(CFG.dimOpacity);
+      seat.style.stroke = "none";
+      seat.style.strokeWidth = "0";
+    }
+  }
+}
+
+function markSeatTaken(seatEl) {
+  seatEl.dataset.taken = "1";
+  seatEl.dataset.role = "national";
+  seatEl.style.fill = CFG.takenFill;
+  seatEl.style.opacity = "1";
+  seatEl.style.stroke = "none";
+  seatEl.style.strokeWidth = "0";
+  seatEl.style.filter = CFG.takenGlow;
+}
+
+function takeSeatsFromPartyGov(registry, partyId, govId, count) {
+  if (count <= 0) return { picked: [], short: 0 };
+
+  const govMap = registry.partyGovSeats.get(partyId);
+  if (!govMap) return { picked: [], short: count };
+
+  const picked = [];
+
+  const takeFromList = (arr, need) => {
+    const available = (arr || []).filter(
+      (s) => s.dataset.taken !== "1" && s.dataset.role === "traditional"
+    );
+    for (let i = available.length - 1; i >= 0 && picked.length < need; i--) {
+      picked.push(available[i]);
+    }
+  };
+
+  // 1) same gov
+  takeFromList(govMap.get(govId), count);
+
+  // 2) fallback within same party, other govs (excluding __extra__)
+  if (picked.length < count && CFG.enableFallbackWithinSameParty) {
+    for (const [otherGovId, seatsOther] of govMap.entries()) {
+      if (picked.length >= count) break;
+      if (otherGovId === govId) continue;
+      if (otherGovId === "__extra__") continue;
+      takeFromList(seatsOther, count);
+    }
+  }
+
+  // 3) from __extra__
+  if (picked.length < count) takeFromList(govMap.get("__extra__"), count);
+
+  const short = Math.max(0, count - picked.length);
+  return { picked, short };
+}
+
+
+
+
+function forceTakeSeatsFromPartyAnywhere(registry, partyId, count) {
+  if (!registry?.ok || count <= 0) return { picked: [], short: count };
+
+  const govMap = registry.partyGovSeats.get(partyId);
+  if (!govMap) return { picked: [], short: count };
+
+  const picked = [];
+
+  const takeFromList = (arr, need) => {
+    const available = (arr || []).filter(
+      (s) => s.dataset.taken !== "1" && s.dataset.role === "traditional"
+    );
+    for (let i = available.length - 1; i >= 0 && picked.length < need; i--) {
+      picked.push(available[i]);
+    }
+  };
+
+  // 1) from any governorate except __extra__
+  for (const [govId, arr] of govMap.entries()) {
+    if (picked.length >= count) break;
+    if (govId === "__extra__") continue;
+    takeFromList(arr, count);
+  }
+
+  // 2) then from __extra__
+  if (picked.length < count) {
+    takeFromList(govMap.get("__extra__"), count);
+  }
+
+  const short = Math.max(0, count - picked.length);
+  return { picked, short };
+}
+
+function forceCoverNotPaintedFromSpecificParties(registry, deficit) {
+  if (!registry?.ok || deficit <= 0) return { forced: 0, remaining: deficit, debug: [] };
+
+  // بالضبط مثل ما طلبت (مرتين KDP)
+  const FORCE_ORDER = [
+    "0-Reconstruction-and-Development-Coalition",
+    "1-Kurdistan-Democratic-Party",
+    "1-Kurdistan-Democratic-Party",
+    "41-Reserved",
+  ];
+
+  let forced = 0;
+  const debug = [];
+
+  for (const pid of FORCE_ORDER) {
+    if (forced >= deficit) break;
+
+    const { picked, short } = forceTakeSeatsFromPartyAnywhere(registry, pid, 1);
+    if (picked.length) {
+      markSeatTaken(picked[0]);
+      forced += 1;
+      debug.push({ partyId: pid, took: 1, short: 0 });
+    } else {
+      debug.push({ partyId: pid, took: 0, short: short || 1 });
+    }
+  }
+
+  return { forced, remaining: Math.max(0, deficit - forced), debug };
+}
+
+
+
+
+
+
+
+
+
+/* ===============================
+   Main
+================================ */
 function initParliamentProgramJoker() {
   const box = document.querySelector(".parl-program-box--joker");
   if (!box) return;
@@ -468,10 +805,8 @@ function initParliamentProgramJoker() {
   const slider = box.querySelector("#parl-gov-slider");
   const sliderValueEl = box.querySelector(".gov-control-block .slider-value");
   const nationalListsSelect = box.querySelector(".national-lists-count");
-  const seatsRow = box.querySelector(".gov-seats-row");
   const noteEl = box.querySelector(".parl-dynamic-note");
 
-  // عناصر عرض الموبايل
   const mobileNewEl = box.querySelector(".parl-mobile-new-count");
   const mobileTradEl = box.querySelector(".parl-mobile-trad-count");
   const seatsTotalNumberEl = box.querySelector(".parl-seats-total-number");
@@ -479,55 +814,37 @@ function initParliamentProgramJoker() {
   const detailsBtn = box.querySelector(".parl-advanced-toggle");
   const resultsContainer = box.querySelector(".parl-results-table-container");
 
-  if (!slider || !nationalListsSelect || !seatsRow) return;
+  const svgObj = box.querySelector("#parliamentSvgObj");
 
-  /* -------- إنشاء دوائر المقاعد (٣٢٩) -------- */
-  const circles = [];
-  seatsRow.innerHTML = "";
-   for (let i = 0; i < TOTAL_PARLIAMENT_SEATS; i += 1) {
-    const circle = document.createElement("div");
-    circle.classList.add("seat-circle");
-    circle.textContent = i + 1;
+  if (!slider || !nationalListsSelect || !svgObj) return;
 
-    if (i === PARLIAMENT_MAJORITY - 1) {
-      circle.classList.add("seat-circle--majority-marker");
-    }
+  const { baselineSeats, partyMeta, govMeta } = buildBaselineFromData();
 
-    if (i === PARLIAMENT_THIRD - 1) {
-      circle.classList.add("seat-circle--third-marker");
-    }
-
-    seatsRow.appendChild(circle);
-    circles.push(circle);
-  }
-
-  // رسم الهلال لأول مرة + عند تغيير حجم الشاشة
-  const applyArcLayout = () => layoutParliamentArc(seatsRow, circles);
-  applyArcLayout();
-  window.addEventListener("resize", applyArcLayout);
+  let registry = null;
+  let svgDoc = null;
 
 
-  /* -------- تجهيز بيانات المقاطعين لكل محافظة -------- */
-  const govData = parliamentGovernoratesData.map((gov) => {
-    const eligible = Math.max(gov.eligible || 0, 0);
-    const voted = Math.max(gov.voted || 0, 0);
-    const boycotters = Math.max(eligible - voted, 0);
 
-    return { ...gov, boycotters };
-  });
+// ===== FORCE cover notPainted from specific parties (your requested 4) =====
 
+
+
+
+
+
+
+  // Cache like reference file
   let lastSummary = null;
 
-  function recompute(updateAdvancedTables = false) {
+  function recompute(updateAdvancedTables = false, logConsole = false) {
     const sliderVal = Number(slider.value) || 0;
     const listsCount = Number(nationalListsSelect.value) || 1;
 
-    if (sliderValueEl) {
-      sliderValueEl.textContent = `${sliderVal}٪`;
-    }
+    if (sliderValueEl) sliderValueEl.textContent = `${sliderVal}٪`;
 
     const participation = sliderVal / 100;
 
+    // totals for tables
     const totalNationalSeatsByList = {};
     let totalTraditionalSeats = 0;
     let totalQuotaSeats = 0;
@@ -537,23 +854,28 @@ function initParliamentProgramJoker() {
     const rows = [];
     const govAdvancedList = [];
 
-    govData.forEach((gov) => {
-      const {
-        id,
-        nameAr,
-        totalSeats,
-        generalSeats,
-        quotaSeats,
-        parties,
-        boycotters,
-      } = gov;
+    // SVG painting diag
+    let painted = 0;
+    let targetNewSeats = 0;
 
-      const seatsGeneral = Math.max(generalSeats || totalSeats || 0, 0);
-      const seatsQuota = Math.max(quotaSeats || 0, 0);
+    if (registry?.ok) resetAllSeatsToBaseline(registry);
+
+    for (const gov of parliamentGovernoratesData) {
+      const { id, nameAr, nameEn, totalSeats, generalSeats, quotaSeats, parties } = gov;
+
+      const govId = id;
+      const govName = nameAr || nameEn || govId;
+
+      const seatsGeneral = Math.max(Number(generalSeats || totalSeats || 0), 0);
+      const seatsQuota = Math.max(Number(quotaSeats || 0), 0);
 
       totalGeneralSeats += seatsGeneral;
       totalQuotaSeats += seatsQuota;
       totalSeatsAll += seatsGeneral + seatsQuota;
+
+      const eligible = Math.max(Number(gov.eligible || 0), 0);
+      const voted = Math.max(Number(gov.voted || 0), 0);
+      const boycotters = Math.max(eligible - voted, 0);
 
       const newVotesGov = boycotters * participation;
       const votesPerNationalList = listsCount > 0 ? newVotesGov / listsCount : 0;
@@ -561,9 +883,9 @@ function initParliamentProgramJoker() {
       const nationalListIds = [];
       const partiesAlloc = [];
 
-      // التجمعات الوطنية الجديدة
+      // national lists
       for (let i = 1; i <= listsCount; i += 1) {
-        const idNat = `nat-${id}-${i}`;
+        const idNat = `nat-${govId}-${i}`;
         nationalListIds.push(idNat);
         partiesAlloc.push({
           id: idNat,
@@ -573,21 +895,23 @@ function initParliamentProgramJoker() {
         });
       }
 
-      // الأحزاب التقليدية (المقاعد العامة فقط)
+      // traditional parties
       if (Array.isArray(parties)) {
         parties.forEach((p) => {
           if (p.isQuota) return;
+          const pid = canonicalPartyId(p);
+          if (!pid) return;
           partiesAlloc.push({
-            id: p.id,
-            name: p.name,
-            votes: Math.max(p.baseVotes || 0, 0),
+            id: pid,
+            name: p.name || pid,
+            votes: Math.max(Number(p.baseVotes || 0), 0),
             isNational: false,
           });
         });
       }
 
-      let seatCounts = new Map();
       let allocation = null;
+      let seatCounts = new Map();
 
       if (seatsGeneral > 0 && partiesAlloc.length > 0) {
         allocation = allocateSeatsSaintLague(partiesAlloc, seatsGeneral);
@@ -596,6 +920,7 @@ function initParliamentProgramJoker() {
 
       const nationalSeatsForGov = {};
       let govNationalTotal = 0;
+
       nationalListIds.forEach((idNat, index) => {
         const seatsNat = seatCounts.get(idNat) || 0;
         nationalSeatsForGov[index + 1] = seatsNat;
@@ -604,14 +929,15 @@ function initParliamentProgramJoker() {
           (totalNationalSeatsByList[index + 1] || 0) + seatsNat;
       });
 
+      targetNewSeats += govNationalTotal;
+
       let govTraditionalFromGeneral = seatsGeneral - govNationalTotal;
       if (govTraditionalFromGeneral < 0) govTraditionalFromGeneral = 0;
-
       totalTraditionalSeats += govTraditionalFromGeneral;
 
       rows.push({
-        id,
-        nameAr,
+        id: govId,
+        nameAr: govName,
         generalSeats: seatsGeneral,
         quotaSeats: seatsQuota,
         totalSeats: seatsGeneral + seatsQuota,
@@ -619,25 +945,56 @@ function initParliamentProgramJoker() {
         traditionalSeats: govTraditionalFromGeneral,
       });
 
-      // داتا سانت لوغو لهذه المحافظة (كل التجمعات الوطنية تعتبر isOurList)
+      // advanced data for tables
       if (allocation) {
         const partiesForAdvanced = partiesAlloc.map((p) => ({
           id: p.id,
           name: p.name,
           votes: p.votes,
-          isOurList: !!p.isNational, // كل التجمعات الوطنية تعتبر "قوائمنا"
+          isOurList: !!p.isNational,
         }));
 
         govAdvancedList.push({
-          id,
-          nameAr,
-          advancedData: {
-            parties: partiesForAdvanced,
-            allocation,
-          },
+          id: govId,
+          nameAr: govName,
+          advancedData: { parties: partiesForAdvanced, allocation },
         });
       }
-    });
+
+      // SVG painting: steal "lost" seats from baseline parties
+      const baseGovMap = baselineSeats.get(govId) || new Map();
+      for (const [partyId, baseSeatsCount] of baseGovMap.entries()) {
+        const newSeatsCount = seatCounts.get(partyId) || 0;
+        const lost = Math.max(0, baseSeatsCount - newSeatsCount);
+        if (lost <= 0) continue;
+
+        if (registry?.ok) {
+          const { picked } = takeSeatsFromPartyGov(registry, partyId, govId, lost);
+          for (const seatEl of picked) {
+            markSeatTaken(seatEl);
+          }
+          painted += picked.length;
+        }
+      }
+    }
+
+
+    // ===== FORCE cover notPainted from specific parties (your requested 4) =====
+if (registry?.ok) {
+  const deficit = Math.max(0, targetNewSeats - painted);
+
+  if (deficit > 0) {
+    const forcedRes = forceCoverNotPaintedFromSpecificParties(registry, deficit);
+
+    painted += forcedRes.forced;
+
+    // Optional debug (very useful)
+    console.log("[JOKER] Forced cover:", forcedRes);
+  }
+}
+
+
+
 
     const totals = {
       generalSeats: totalGeneralSeats,
@@ -647,27 +1004,9 @@ function initParliamentProgramJoker() {
       nationalSeats: totalNationalSeatsByList,
     };
 
-    /* -------- تلوين دوائر البرلمان حسب مقاعد التجمّعات الوطنية -------- */
-    const totalNationalAllLists = Object.values(
-      totalNationalSeatsByList
-    ).reduce((sum, v) => sum + v, 0);
+    const totalNationalAllLists = Object.values(totalNationalSeatsByList).reduce((sum, v) => sum + v, 0);
 
-    circles.forEach((circle, index) => {
-      circle.classList.remove("seat-circle--green");
-      circle.classList.remove("seat-circle--target", "seat-circle--rest");
-
-      if (index < PARLIAMENT_MAJORITY) {
-        circle.classList.add("seat-circle--target");
-      } else {
-        circle.classList.add("seat-circle--rest");
-      }
-
-      if (index < totalNationalAllLists) {
-        circle.classList.add("seat-circle--green");
-      }
-    });
-
-    /* -------- النص التوضيحي تحت السلايدر -------- */
+    // note text
     if (noteEl) {
       if (totalNationalAllLists >= PARLIAMENT_MAJORITY) {
         noteEl.textContent =
@@ -684,91 +1023,90 @@ function initParliamentProgramJoker() {
       }
     }
 
-      /* -------- أرقام الموبايل (نواب جدد / تقليديين) -------- */
-     /* -------- أرقام الموبايل (نواب جدد / تقليديين) -------- */
-    if (mobileNewEl) {
-      mobileNewEl.textContent = totalNationalAllLists.toLocaleString("en-US");
-    }
-    if (mobileTradEl) {
-      mobileTradEl.textContent = totalTraditionalSeats.toLocaleString("en-US");
-    }
+    // mobile numbers
+    if (mobileNewEl) mobileNewEl.textContent = toEn(totalNationalAllLists);
+    if (mobileTradEl) mobileTradEl.textContent = toEn(totalTraditionalSeats);
 
-    // نفس الأرقام داخل الهلال + نص نسبة السلايدر + سطر الكوتا
     if (seatsTotalNumberEl) {
-      const newSeats = totalNationalAllLists.toLocaleString("en-US");
-      const tradSeats = totalTraditionalSeats.toLocaleString("en-US");
-
-      const sliderText = `  ${sliderVal}٪`;
-
       seatsTotalNumberEl.innerHTML = `
-        <div class="parl-seats-percent-row">
-          ${sliderText}
-        </div>
-        <div class="parl-seats-count-row">
-          ${newSeats} | ${tradSeats}
-        </div>
-        <div class="parl-seats-quota-note">
-          +9 مقاعد كوتا أقليات
-        </div>
+        <div class="parl-seats-percent-row">${sliderVal}٪</div>
+        <div class="parl-seats-count-row">${toEn(totalNationalAllLists)} | ${toEn(totalTraditionalSeats)}</div>
+        <div class="parl-seats-quota-note">+${PARLIAMENT_QUOTA_SEATS} مقاعد كوتا أقليات</div>
       `;
     }
 
-
-
-
-    // نخزن الملخص حتى نعيد رسم الجدول عند الحاجة
+    // cache summary for details button (EXACT reference behavior)
     lastSummary = {
       listsCount,
       sliderValue: sliderVal,
       rows,
       totals,
       govAdvancedList,
+      // svg diag (optional)
+      diag: {
+        targetNewSeats,
+        painted,
+        notPainted: Math.max(0, targetNewSeats - painted),
+        svgShortageBlocks: registry?.shortage?.length || 0,
+        svgMissingGroups: registry?.missingGroups?.length || 0,
+      },
     };
 
-    // تحديث الجداول الثقيلة فقط عندما نطلب ذلك
-    if (
-      updateAdvancedTables &&
-      resultsContainer &&
-      !resultsContainer.hasAttribute("hidden")
-    ) {
+    // IMPORTANT: heavy tables ONLY when requested AND panel is open
+    if (updateAdvancedTables && resultsContainer && !resultsContainer.hasAttribute("hidden")) {
       renderParliamentResultsTable(lastSummary, resultsContainer, slider);
+    }
+
+    if (logConsole || CFG.logEveryInput) {
+      console.groupCollapsed(
+        `%c[JOKER] slider=${sliderVal}% lists=${listsCount} newSeats=${lastSummary.diag.targetNewSeats} painted=${lastSummary.diag.painted} notPainted=${lastSummary.diag.notPainted}`,
+        "color:#00E5FF;font-weight:800;"
+      );
+      console.log("SVG integrity:", registry?._integrity);
+      console.log("SVG shortage blocks:", lastSummary.diag.svgShortageBlocks);
+      console.log("SVG missing groups:", lastSummary.diag.svgMissingGroups);
+      console.groupEnd();
     }
   }
 
-  /* -------- أحداث السلايدر وعدد التجمعات -------- */
+  /* -------- events EXACT like reference -------- */
   const handleSliderInput = () => {
-    // تحديث خفيف وسريع (الدوائر + النص فقط)
-    recompute(false);
+    // fast update only
+    recompute(false, false);
   };
 
   const handleSliderChange = () => {
-    // عند إفلات السلايدر نحسب الجداول أيضاً
-    recompute(true);
+    // after release: update tables if details open
+    recompute(true, true);
   };
 
   slider.addEventListener("input", handleSliderInput);
   slider.addEventListener("change", handleSliderChange);
 
   nationalListsSelect.addEventListener("change", () => {
-    // تغيير عدد التجمعات يحتاج إعادة حساب كاملة
-    recompute(true);
+    recompute(true, true);
   });
 
-  /* -------- زر إظهار / إخفاء التفاصيل -------- */
+  /* -------- details button EXACT like reference -------- */
   if (detailsBtn && resultsContainer) {
     resultsContainer.setAttribute("hidden", "hidden");
+    detailsBtn.textContent = "إظهار التفاصيل";
 
     detailsBtn.addEventListener("click", () => {
       const isHidden = resultsContainer.hasAttribute("hidden");
 
       if (isHidden) {
         resultsContainer.removeAttribute("hidden");
+
         if (!lastSummary) {
-          recompute(true);
+          // lazy compute now
+          recompute(true, true);
         }
+
         if (lastSummary) {
           renderParliamentResultsTable(lastSummary, resultsContainer, slider);
         }
+
         detailsBtn.textContent = "إخفاء التفاصيل";
       } else {
         resultsContainer.setAttribute("hidden", "hidden");
@@ -777,8 +1115,25 @@ function initParliamentProgramJoker() {
     });
   }
 
-  // أول حساب (مع بناء الدوائر والنصوص فقط)
-  recompute(false);
+  // first compute (fast only)
+  recompute(false, false);
+
+  // SVG load
+  svgObj.addEventListener("load", () => {
+    svgDoc = svgObj.contentDocument;
+    if (!svgDoc) return;
+
+    registry = bindSvgAndBuildRegistry(svgDoc, partyMeta, govMeta);
+
+    if (registry._integrity?.svgTotalCircles !== PARLIAMENT_TOTAL_SEATS) {
+      console.warn("[JOKER] SVG does not contain 329 circles. Check SVG file.");
+    }
+
+    resetAllSeatsToBaseline(registry);
+
+    // after binding: full compute once (tables only if open)
+    recompute(true, true);
+  });
 }
 
 document.addEventListener("DOMContentLoaded", initParliamentProgramJoker);
